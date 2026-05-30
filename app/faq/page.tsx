@@ -5,8 +5,8 @@ export default function FaqPage() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Draft Page"
-        title="FAQ"
+        className="page-header-prominent"
+        title="Frequently Asked Questions"
         description="This page is reserved for frequently asked questions."
       />
     </PageShell>

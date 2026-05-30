@@ -22,6 +22,7 @@ const EXCLUDED_CORE_GENE_NAMES = new Set([
   "flgo",
   "flgp"
 ]);
+const EXCLUDED_GENE_PAGE_NAMES = new Set(["ldtr", "transglutaminase"]);
 
 const regulationGenes = new Set([
   "flia",
@@ -150,6 +151,7 @@ function buildGeneDefs(headers) {
 
   return Array.from(map.values())
     .filter((def) => def.index >= 0)
+    .filter((def) => !EXCLUDED_GENE_PAGE_NAMES.has(normalizeGeneName(def.name)))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 

@@ -6,6 +6,7 @@ export default function GeneCorrelationPage() {
   return (
     <PageShell>
       <PageHeader
+        className="page-header-prominent"
         title="Gene Co-presence Heatmap and Clustering"
         description={
           <span className="text-[var(--text)]">

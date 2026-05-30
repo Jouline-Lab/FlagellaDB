@@ -3,8 +3,10 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import * as d3 from 'd3';
+import { Download } from 'lucide-react';
 import { DownloadActionButton } from '@/components/DownloadActionButton';
 import { withBasePath } from '@/lib/assetPaths';
+import { getUntrimmedMsaGzipHref } from '@/lib/browserGenes';
 import { getSpeciesSuggestionsClient } from '@/lib/browserSpecies';
 import { formatSpeciesName, normalizeSpeciesQuery } from '@/lib/speciesNaming';
 import {
@@ -473,6 +475,8 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
       loadedFullWidthSequences[0]?.header ?? null
     );
   }, [kindSourcePath, loadedFullWidthSequences]);
+
+  const untrimmedMsaGzipHref = useMemo(() => getUntrimmedMsaGzipHref(geneName), [geneName]);
 
   const selectedSpeciesTracks = useMemo(
     () =>
@@ -1183,11 +1187,21 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
 
   return (
     <div className="rounded-lg max-w-full overflow-hidden">
-      <div className="p-6 border-b border-black/10 dark:border-white/10 flex items-center justify-between gap-4">
+      <div className="p-6 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-xl font-semibold m-0">Sequence Comparison with Sequence Logo</h2>
-        {logoData.length > 0 ? (
-          <DownloadActionButton onClick={downloadSVG}>Download SVG</DownloadActionButton>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <a
+            href={untrimmedMsaGzipHref}
+            download={`${geneName}.fasta.gz`}
+            className="button button-secondary table-action-button no-underline"
+          >
+            <Download className="table-action-icon" aria-hidden />
+            Download Untrimmed MSA
+          </a>
+          {logoData.length > 0 ? (
+            <DownloadActionButton onClick={downloadSVG}>Download SVG</DownloadActionButton>
+          ) : null}
+        </div>
       </div>
 
       <div className="p-6 min-w-0 max-w-full overflow-hidden">

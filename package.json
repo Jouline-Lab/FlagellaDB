@@ -13,7 +13,8 @@
     "split-large-alignments": "node scripts/split-large-alignments.mjs",
     "precompute:gene-logos": "node scripts/precompute-gene-logos.mjs",
     "check-assembly-duplicates": "node scripts/check-assembly-duplicates.mjs",
-    "build:flagella-svg-labels": "node scripts/build-flagella-svg-labels.mjs"
+    "build:flagella-svg-labels": "node scripts/build-flagella-svg-labels.mjs",
+    "build:home-stats": "node scripts/build-home-stats.mjs"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "latest",

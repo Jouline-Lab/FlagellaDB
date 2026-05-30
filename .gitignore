@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # local env files
 .env*.local
+
+# large gzipped MSA files (too big for GitHub; host externally / Git LFS)
+/public/gzip_MSA/

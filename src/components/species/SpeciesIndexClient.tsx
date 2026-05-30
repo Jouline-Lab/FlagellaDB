@@ -75,7 +75,8 @@ export default function SpeciesIndexClient() {
     if (!selectedSpecies) {
       setFlagellaContent(null);
       setOperonContent(null);
-      setDetailError(entityId ? "Species not found." : null);
+      // Avoid a transient "not found" message while species index is still loading.
+      setDetailError(isLoading ? null : entityId ? "Species not found." : null);
       setDetailLoading(false);
       return;
     }
@@ -112,14 +113,20 @@ export default function SpeciesIndexClient() {
     return () => {
       cancelled = true;
     };
-  }, [selectedSpecies, entityId]);
+  }, [selectedSpecies, entityId, isLoading]);
 
   return (
     <PageShell>
       {entityId ? (
         <section className="species-grid species-grid-details">
           <article className="species-card species-card-wide">
-            {isLoading || detailLoading ? <p>Loading species details...</p> : null}
+            {isLoading || detailLoading ? (
+              <div className="species-loading-state" role="status" aria-live="polite">
+                <p className="species-loading-title">Loading...</p>
+                <span className="species-loading-spinner" aria-hidden="true" />
+                <p className="species-loading-subtitle">Please wait a moment.</p>
+              </div>
+            ) : null}
             {loadError ? <p>{loadError}</p> : null}
             {detailError ? <p>{detailError}</p> : null}
 

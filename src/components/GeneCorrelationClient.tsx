@@ -26,6 +26,7 @@ import {
   taxonColumnCandidates,
   toDistanceMatrix,
   type ClusterNode,
+  type JaccardResult,
   type JaccardStats,
   type ParsedTable,
   type WeightingMode
@@ -732,6 +733,7 @@ export default function GeneCorrelationClient() {
   const gradientId = `cbar-${rawId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const latestJaccardResultRef = useRef<JaccardResult | null>(null);
   const [parsed, setParsed] = useState<ParsedTable | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [taxonCol, setTaxonCol] = useState("");
@@ -848,6 +850,7 @@ export default function GeneCorrelationClient() {
     if (selectedGenes.length === 0) {
       setDrawError("Select at least one gene.");
       setHeatmapDrawn(false);
+      latestJaccardResultRef.current = null;
       while (svg.firstChild) {
         svg.removeChild(svg.firstChild);
       }
@@ -861,6 +864,7 @@ export default function GeneCorrelationClient() {
         weights,
         new Set(selectedGenes)
       );
+      latestJaccardResultRef.current = result;
       drawClusteredHeatmap({
         svg,
         labels: result.labels,
@@ -879,6 +883,7 @@ export default function GeneCorrelationClient() {
     } catch (e) {
       setDrawError(e instanceof Error ? e.message : String(e));
       setHeatmapDrawn(false);
+      latestJaccardResultRef.current = null;
       while (svg.firstChild) {
         svg.removeChild(svg.firstChild);
       }
@@ -911,6 +916,42 @@ export default function GeneCorrelationClient() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "clustered_gene_co_presence_heatmap.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const downloadJaccardTsv = useCallback(() => {
+    const result = latestJaccardResultRef.current;
+    if (!result) {
+      return;
+    }
+    const { labels, sim } = result;
+    const n = labels.length;
+    if (n === 0) {
+      return;
+    }
+
+    const headerRow = ["gene", ...labels].join("\t");
+    const lines: string[] = [headerRow];
+    for (let i = 0; i < n; i += 1) {
+      const cells: string[] = [labels[i]];
+      const row = sim[i] ?? [];
+      for (let j = 0; j < n; j += 1) {
+        const v = row[j];
+        cells.push(typeof v === "number" ? fmt(v, 6) : "NaN");
+      }
+      lines.push(cells.join("\t"));
+    }
+
+    const blob = new Blob([`${lines.join("\n")}\n`], {
+      type: "text/tab-separated-values;charset=utf-8"
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "gene_jaccard_similarity_matrix.tsv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1210,9 +1251,18 @@ export default function GeneCorrelationClient() {
       <div className="rounded-2xl border border-black/10 dark:border-white/10 bg-[var(--dialog-bg)] overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 dark:border-white/10 px-4 py-4 sm:px-5">
           <h2 className="text-lg font-semibold text-[var(--text)] m-0">{HEATMAP_TITLE}</h2>
-          <DownloadActionButton onClick={downloadHeatmapSvg} disabled={!heatmapDrawn}>
-            Download SVG
-          </DownloadActionButton>
+          <div className="flex flex-wrap items-center gap-2">
+            <DownloadActionButton
+              onClick={downloadJaccardTsv}
+              disabled={!heatmapDrawn}
+              title="Download the pairwise Jaccard similarity matrix as TSV"
+            >
+              Download Similarity Matrix
+            </DownloadActionButton>
+            <DownloadActionButton onClick={downloadHeatmapSvg} disabled={!heatmapDrawn}>
+              Download SVG
+            </DownloadActionButton>
+          </div>
         </div>
         <div className="overflow-auto min-h-[400px]">
           <svg

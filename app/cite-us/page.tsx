@@ -5,7 +5,7 @@ export default function CiteUsPage() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Draft Page"
+        className="page-header-prominent"
         title="Cite Us"
         description="This page is reserved for citation guidance and references."
       />

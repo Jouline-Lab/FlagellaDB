@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DownloadActionButton } from "@/components/DownloadActionButton";
-import { CheckSquare, RotateCcw, Square, Table2 } from "lucide-react";
+import { CheckSquare, Download, RotateCcw, Square, Table2 } from "lucide-react";
 import Link from "next/link";
 import {
   getPhyleticHeadersClient,
@@ -12,6 +12,10 @@ import {
 import { genePageHref, speciesPageHref } from "@/lib/pageEntityQuery";
 import { geneNameToSlug } from "@/lib/flagellaGeneClassification";
 import { speciesNameToSlug } from "@/lib/speciesNaming";
+import { withBasePath } from "@/lib/assetPaths";
+
+const FULL_TABLE_TSV_PATH = "/flagellar_genes_phyletic_distribution.tsv";
+const FULL_TABLE_DOWNLOAD_NAME = "flagellar_genes_phyletic_distribution.tsv";
 
 type PhyleticTableExplorerProps = {
   headers: string[];
@@ -576,13 +580,24 @@ export default function PhyleticTableExplorer({
   return (
     <main className="table-page">
       <div className="container table-page-inner">
-        <header className="table-page-header">
-          <h1>Flagellar Gene Table</h1>
-          <p>
-            Select flagellar genes to examine their genome-level count/presence,
-            associated GTDB and NCBI protein IDs, and phyletic distribution across
-            filtered assemblies.
-          </p>
+        <header className="table-page-header flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1>Flagellar Gene Table</h1>
+            <p>
+              Select flagellar genes to examine their genome-level count/presence,
+              associated GTDB and NCBI protein IDs, and phyletic distribution across
+              filtered assemblies.
+            </p>
+          </div>
+          <a
+            href={withBasePath(FULL_TABLE_TSV_PATH)}
+            download={FULL_TABLE_DOWNLOAD_NAME}
+            className="button button-secondary table-action-button no-underline shrink-0"
+            title="Download the complete phyletic distribution table as TSV"
+          >
+            <Download className="table-action-icon" aria-hidden />
+            Download Full Table (TSV)
+          </a>
         </header>
 
         <section className="control-panel">

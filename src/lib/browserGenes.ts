@@ -189,6 +189,12 @@ export async function getAlignmentPathForGeneClient(geneName: string): Promise<s
   return paths[0] ?? null;
 }
 
+/** Full untrimmed MSA as gzip: `public/gzip_MSA/{GeneName}.fasta.gz`. */
+export function getUntrimmedMsaGzipHref(geneName: string): string {
+  const file = `${geneName.trim()}.fasta.gz`;
+  return withBasePath(`/gzip_MSA/${encodeURIComponent(file)}`);
+}
+
 let geneLogoPrecomputeCache: Map<string, Promise<GeneLogoPrecomputePayload | null>> | null = null;
 
 function getGeneLogoPrecomputeCache() {

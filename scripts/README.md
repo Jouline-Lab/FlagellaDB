@@ -7,8 +7,9 @@ Typical order when refreshing the main phyletic TSV (`public/flagellar_genes_phy
 1. `npm run build:taxonomy-index`
 2. `npm run build:species-flagella-index`
 3. `npm run build:gene-profiles-index`
-4. Optionally: `npm run split-large-alignments` (only if you add oversized FASTAs)
-5. Optionally: `npm run precompute:gene-logos` (sequence logos on gene pages)
+4. `npm run build:home-stats`
+5. Optionally: `npm run split-large-alignments` (only if you add oversized FASTAs)
+6. Optionally: `npm run precompute:gene-logos` (sequence logos on gene pages)
 
 ---
 
@@ -23,6 +24,7 @@ Typical order when refreshing the main phyletic TSV (`public/flagellar_genes_phy
 | `precompute-gene-logos.mjs` | `npm run precompute:gene-logos` | `public/gene-profiles.json`, `public/alignments-index.json`, alignment FASTAs | `public/precomputed-logos/{slug}.json` | For each gene, loads the same FASTA set as the site (including parts), computes **per-column** gap percentage and amino-acid counts. The app uses this for the **sequence logo** and gap filtering without loading the full MSA. **Keep column math aligned with `src/lib/sequenceLogoMath.ts`** (comments in the script refer to this). |
 | `check-assembly-duplicates.mjs` | `npm run check-assembly-duplicates` | `public/flagellar_genes_phyletic_distribution.tsv` | _(console only)_ | Reports duplicate values in the first column (assembly ID), useful for data QA. |
 | `build-flagella-svg-labels.mjs` | `npm run build:flagella-svg-labels` | `public/Flagella_figure.svg` (default) | `public/Flagella_figure.labeled.svg`, `public/Flagella_figure.label-map.json` | Post-processes the flagella diagram SVG: associates text labels with nearby shapes and writes a labeled copy plus a JSON map. CLI: `--input`, `--output`, `--map-output`. |
+| `build-home-stats.mjs` | `npm run build:home-stats` | `public/flagellar_genes_phyletic_distribution.tsv` | `public/home-stats.json` | Precomputes homepage summary statistics from TSV columns (total protein sequences from `*_count` sums, unique genes from number of `*_count` columns, bacterial assembly count from `domain`), plus row-level QA counts for non-zero coverage. |
 
 All `.mjs` scripts use `process.cwd()` as the project root; paths are written relative to that.
 
@@ -40,6 +42,7 @@ All `.mjs` scripts use `process.cwd()` as the project root; paths are written re
 
 - **Gene pages** read `gene-profiles.json`, `alignments-index.json`, optional `precomputed-logos/{slug}.json`, and fetch alignment FASTA only when the user requests species rows (streaming match by GTDB ID in headers).
 - **Species / taxonomy** views consume `species-flagella-index.json` and `taxonomy-index.json`.
+- **Homepage stats** read `home-stats.json` (build with `npm run build:home-stats` after updating the main phyletic TSV).
 - After you change TSVs, SVG sources, or alignment files, rerun the relevant scripts and commit the updated `public/*.json` (and any new FASTA parts or precompute JSON) so production stays in sync.
 
 If you introduce new file formats or column layouts, update both the affected script(s) and any matching logic in `src/lib/` (for example `browserGenes.ts`, `sequenceLogoMath.ts`, or parsers in components).

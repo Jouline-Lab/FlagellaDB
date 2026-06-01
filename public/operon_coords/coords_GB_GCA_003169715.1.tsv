@@ -1,2 +1,3 @@
 gene_name	gene_id	genome_id	start	stop	strand	assembly
+FliA	PNAR01000514.1_6	PNAR01000514.1	2777	3571	-1	GB_GCA_003169715.1
 Transglycosylase	PNAR01000330.1_12	PNAR01000330.1	12426	13262	1	GB_GCA_003169715.1

@@ -2,7 +2,6 @@ import { EXCLUDED_CORE_GENE_NAMES } from "@/lib/visualization/config";
 
 const regulationGenes = new Set([
   "flia",
-  "fliz",
   "flhc",
   "flhd",
   "fleq",
@@ -15,6 +14,7 @@ const chaperoneGenes = new Set(["flis", "flit", "flgn", "flga"]);
 const motorGenes = new Set(["mota", "motb", "motx", "moty", "flig", "flim", "flin", "fliy"]);
 const exportGenes = new Set(["flha", "flhb", "flip", "fliq", "flir", "flio", "flih", "flij"]);
 const filamentGenes = new Set(["flic", "flid", "flik", "flif", "flbg", "flad", "flaf"]);
+const otherGenes = new Set(["fliz"]);
 
 export function normalizeGeneName(value: string): string {
   return value.replace(/_count$/i, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -31,6 +31,7 @@ export function geneNameToSlug(value: string): string {
 
 export function classifyGene(geneName: string): string {
   const gene = normalizeGeneName(geneName);
+  if (otherGenes.has(gene)) return "Other flagella-associated genes";
   if (regulationGenes.has(gene)) return "Regulation";
   if (chaperoneGenes.has(gene)) return "Chaperones & assembly factors";
   if (motorGenes.has(gene)) return "Motor & switch";

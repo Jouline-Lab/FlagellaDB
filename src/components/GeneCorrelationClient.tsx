@@ -32,6 +32,7 @@ import {
   type WeightingMode
 } from "@/lib/geneCorrelation/jaccardHeatmapCore";
 import { DownloadActionButton } from "@/components/DownloadActionButton";
+import GeneNetworkGraph from "@/components/GeneNetworkGraph";
 import { CheckSquare, ChevronDown, Info, Square } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -746,6 +747,7 @@ export default function GeneCorrelationClient() {
   const [geneActiveIndex, setGeneActiveIndex] = useState(-1);
   const [drawError, setDrawError] = useState<string | null>(null);
   const [heatmapDrawn, setHeatmapDrawn] = useState(false);
+  const [jaccardResult, setJaccardResult] = useState<JaccardResult | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -851,6 +853,7 @@ export default function GeneCorrelationClient() {
       setDrawError("Select at least one gene.");
       setHeatmapDrawn(false);
       latestJaccardResultRef.current = null;
+      setJaccardResult(null);
       while (svg.firstChild) {
         svg.removeChild(svg.firstChild);
       }
@@ -865,6 +868,7 @@ export default function GeneCorrelationClient() {
         new Set(selectedGenes)
       );
       latestJaccardResultRef.current = result;
+      setJaccardResult(result);
       drawClusteredHeatmap({
         svg,
         labels: result.labels,
@@ -884,6 +888,7 @@ export default function GeneCorrelationClient() {
       setDrawError(e instanceof Error ? e.message : String(e));
       setHeatmapDrawn(false);
       latestJaccardResultRef.current = null;
+      setJaccardResult(null);
       while (svg.firstChild) {
         svg.removeChild(svg.firstChild);
       }
@@ -1272,6 +1277,13 @@ export default function GeneCorrelationClient() {
           />
         </div>
       </div>
+
+      <GeneNetworkGraph
+        result={jaccardResult}
+        isDarkMode={isDarkMode}
+        lowColor={lowColor}
+        highColor={highColor}
+      />
 
       {tooltip && typeof window !== "undefined"
         ? createPortal(

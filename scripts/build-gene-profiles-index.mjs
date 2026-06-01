@@ -26,7 +26,6 @@ const EXCLUDED_GENE_PAGE_NAMES = new Set(["ldtr", "transglutaminase"]);
 
 const regulationGenes = new Set([
   "flia",
-  "fliz",
   "flhc",
   "flhd",
   "fleq",
@@ -39,6 +38,7 @@ const chaperoneGenes = new Set(["flis", "flit", "flgn", "flga"]);
 const motorGenes = new Set(["mota", "motb", "motx", "moty", "flig", "flim", "flin", "fliy"]);
 const exportGenes = new Set(["flha", "flhb", "flip", "fliq", "flir", "flio", "flih", "flij"]);
 const filamentGenes = new Set(["flic", "flid", "flik", "flif", "flbg", "flad", "flaf"]);
+const otherGenes = new Set(["fliz"]);
 
 function normalizeGeneName(value) {
   return value.replace(/_count$/i, "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -71,6 +71,7 @@ function geneNameToSlug(value) {
 
 function classifyGene(geneName) {
   const gene = normalizeGeneName(geneName);
+  if (otherGenes.has(gene)) return "Other flagella-associated genes";
   if (regulationGenes.has(gene)) return "Regulation";
   if (chaperoneGenes.has(gene)) return "Chaperones & assembly factors";
   if (motorGenes.has(gene)) return "Motor & switch";

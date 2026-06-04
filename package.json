@@ -31,10 +31,12 @@
     "tailwind-merge": "latest"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
+    "@types/d3": "^7.4.3",
+    "@types/d3-selection": "^3.0.11",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "autoprefixer": "^10.4.20",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "^8.5.3",

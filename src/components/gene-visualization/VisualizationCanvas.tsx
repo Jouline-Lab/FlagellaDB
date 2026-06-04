@@ -551,7 +551,7 @@ ref
         .style('font-weight', '500')
         .style('fill', (d: LineageRun) => textFillForBg(scale(d.cat)))
         .style('pointer-events', 'none')
-        .each(function(this: SVGTextElement, d: LineageRun) {
+        .each(function(d: LineageRun) {
           const startX = coordMap.get(assemblies[d.start]) || 0;
           const endX = coordMap.get(assemblies[d.end]) || 0;
           const endW = widthMap.get(assemblies[d.end]) || 0;

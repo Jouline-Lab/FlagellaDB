@@ -139,10 +139,12 @@ function rowMatchesSpeciesQuery(
   const assembly =
     assemblyRankIndex >= 0 ? normalizeAssemblyQuery((row[assemblyRankIndex] ?? "").trim()) : "";
 
+  const normalizedAssemblyQuery = normalizeAssemblyQuery(normalizedQuery);
+
   return (
-    (scientificName && scientificName.includes(normalizedQuery)) ||
-    (ncbiOrganismName && ncbiOrganismName.includes(normalizedQuery)) ||
-    (assembly && assembly.includes(normalizeAssemblyQuery(normalizedQuery)))
+    (scientificName.length > 0 && scientificName.includes(normalizedQuery)) ||
+    (ncbiOrganismName.length > 0 && ncbiOrganismName.includes(normalizedQuery)) ||
+    (assembly.length > 0 && assembly.includes(normalizedAssemblyQuery))
   );
 }
 

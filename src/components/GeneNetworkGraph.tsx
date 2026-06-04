@@ -1,6 +1,7 @@
 "use client";
 
 import * as d3 from "d3";
+import type { Selection } from "d3-selection";
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
@@ -194,7 +195,7 @@ function orderedLegendCategories(categories: Iterable<string>): string[] {
 }
 
 function appendNetworkLegends(
-  root: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  root: Selection<SVGSVGElement, unknown, null, undefined>,
   {
     categories,
     lowColor,
@@ -483,10 +484,10 @@ export default function GeneNetworkGraph({
     const container = root.append("g").attr("class", "network-graph-layer");
 
     const zoom = d3
-      .zoom()
+      .zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.2, 6])
-      .on("zoom", (event: { transform: unknown }) => {
-        container.attr("transform", event.transform);
+      .on("zoom", (event) => {
+        container.attr("transform", event.transform.toString());
       });
     root.call(zoom);
 
@@ -515,7 +516,7 @@ export default function GeneNetworkGraph({
     const nodeGroupSel = container
       .append("g")
       .attr("class", "network-nodes")
-      .selectAll("g")
+      .selectAll<SVGGElement, SimNode>("g")
       .data(nodes)
       .join("g")
       .attr("class", "network-node")
@@ -568,12 +569,12 @@ export default function GeneNetworkGraph({
       .on("mouseleave", () => setTooltip(null));
 
     const simulation = d3
-      .forceSimulation(nodes)
+      .forceSimulation<SimNode>(nodes)
       .force(
         "link",
         d3
-          .forceLink(links)
-          .id((d: SimNode) => d.id)
+          .forceLink<SimNode, SimLink>(links)
+          .id((d) => d.id)
           // Stronger associations pull genes closer together.
           .distance((d: SimLink) => 220 - 150 * d.sim)
           .strength((d: SimLink) => 0.05 + 0.45 * d.sim)
@@ -611,19 +612,19 @@ export default function GeneNetworkGraph({
     });
 
     const drag = d3
-      .drag()
-      .on("start", (event: { active: boolean }, d: SimNode) => {
+      .drag<SVGGElement, SimNode>()
+      .on("start", (event, d) => {
         if (!event.active) {
           simulation.alphaTarget(0.3).restart();
         }
         d.fx = d.x;
         d.fy = d.y;
       })
-      .on("drag", (event: { x: number; y: number }, d: SimNode) => {
+      .on("drag", (event, d) => {
         d.fx = event.x;
         d.fy = event.y;
       })
-      .on("end", (event: { active: boolean }, d: SimNode) => {
+      .on("end", (event, d) => {
         if (!event.active) {
           simulation.alphaTarget(0);
         }

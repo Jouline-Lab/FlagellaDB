@@ -25,9 +25,9 @@ const modelSpeciesExamples = [
     slug: speciesNameToSlug("Pseudomonas aeruginosa")
   },
   {
-    speciesLabel: "Campylobacter_D jejuni_A",
-    assemblyLabel: "GCA_000163995.1",
-    slug: speciesNameToSlug("Campylobacter_D jejuni_A")
+    speciesLabel: "Campylobacter_D jejuni",
+    assemblyLabel: "GCF_001457695.1",
+    slug: speciesNameToSlug("Campylobacter_D jejuni")
   }
 ];
 const modelGenes = ["FliG", "FlgB", "MotA"];

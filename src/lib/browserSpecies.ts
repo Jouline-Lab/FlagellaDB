@@ -1,4 +1,10 @@
-import { formatSpeciesName, normalizeSpeciesQuery, speciesNameToSlug, stripTaxonomyPrefix } from "@/lib/speciesNaming";
+import {
+  formatSpeciesName,
+  normalizeAssemblyQuery,
+  normalizeSpeciesQuery,
+  speciesNameToSlug,
+  stripTaxonomyPrefix
+} from "@/lib/speciesNaming";
 import { withBasePath } from "@/lib/assetPaths";
 import type { SpeciesProfile, SpeciesSuggestion } from "@/lib/speciesData";
 
@@ -11,11 +17,9 @@ const TAXONOMY_RANKS = [
   "species"
 ] as const;
 
-type TaxonomyRank = (typeof TAXONOMY_RANKS)[number];
-
 type TaxonomyIndex = {
   version: number;
-  ranks: TaxonomyRank[];
+  ranks: string[];
   rows: string[][];
 };
 
@@ -26,6 +30,10 @@ let speciesProfilesPromise: Promise<SpeciesProfile[]> | null = null;
 
 function cleanTaxonomyValue(value: string): string {
   return stripTaxonomyPrefix(value) || "-";
+}
+
+function rankIndex(ranks: string[], rank: string): number {
+  return ranks.indexOf(rank);
 }
 
 async function loadTaxonomyIndex(): Promise<TaxonomyIndex> {
@@ -45,12 +53,14 @@ async function loadTaxonomyIndex(): Promise<TaxonomyIndex> {
 async function loadSpeciesProfiles(): Promise<SpeciesProfile[]> {
   if (!speciesProfilesPromise) {
     speciesProfilesPromise = loadTaxonomyIndex().then((taxonomyIndex) => {
-      const speciesRankIndex = taxonomyIndex.ranks.indexOf("species");
-      const phylumRankIndex = taxonomyIndex.ranks.indexOf("phylum");
-      const classRankIndex = taxonomyIndex.ranks.indexOf("class");
-      const orderRankIndex = taxonomyIndex.ranks.indexOf("order");
-      const familyRankIndex = taxonomyIndex.ranks.indexOf("family");
-      const genusRankIndex = taxonomyIndex.ranks.indexOf("genus");
+      const speciesRankIndex = rankIndex(taxonomyIndex.ranks, "species");
+      const phylumRankIndex = rankIndex(taxonomyIndex.ranks, "phylum");
+      const classRankIndex = rankIndex(taxonomyIndex.ranks, "class");
+      const orderRankIndex = rankIndex(taxonomyIndex.ranks, "order");
+      const familyRankIndex = rankIndex(taxonomyIndex.ranks, "family");
+      const genusRankIndex = rankIndex(taxonomyIndex.ranks, "genus");
+      const nameRankIndex = rankIndex(taxonomyIndex.ranks, "name");
+      const assemblyRankIndex = rankIndex(taxonomyIndex.ranks, "assembly");
 
       if (
         speciesRankIndex < 0 ||
@@ -88,6 +98,10 @@ async function loadSpeciesProfiles(): Promise<SpeciesProfile[]> {
         rowsBySlug.set(slug, {
           name,
           slug,
+          ncbiOrganismName:
+            nameRankIndex >= 0 ? (row[nameRankIndex] ?? "").trim() || undefined : undefined,
+          assembly:
+            assemblyRankIndex >= 0 ? (row[assemblyRankIndex] ?? "").trim() || undefined : undefined,
           taxonomy: {
             phylum: cleanTaxonomyValue(row[phylumRankIndex] ?? ""),
             className: cleanTaxonomyValue(row[classRankIndex] ?? ""),
@@ -107,20 +121,91 @@ async function loadSpeciesProfiles(): Promise<SpeciesProfile[]> {
   return speciesProfilesPromise;
 }
 
+function rowMatchesSpeciesQuery(
+  row: string[],
+  ranks: string[],
+  normalizedQuery: string
+): boolean {
+  const speciesRankIndex = rankIndex(ranks, "species");
+  const nameRankIndex = rankIndex(ranks, "name");
+  const assemblyRankIndex = rankIndex(ranks, "assembly");
+
+  const scientificName =
+    speciesRankIndex >= 0
+      ? normalizeSpeciesQuery(formatSpeciesName((row[speciesRankIndex] ?? "").trim()))
+      : "";
+  const ncbiOrganismName =
+    nameRankIndex >= 0 ? normalizeSpeciesQuery((row[nameRankIndex] ?? "").trim()) : "";
+  const assembly =
+    assemblyRankIndex >= 0 ? normalizeAssemblyQuery((row[assemblyRankIndex] ?? "").trim()) : "";
+
+  return (
+    (scientificName && scientificName.includes(normalizedQuery)) ||
+    (ncbiOrganismName && ncbiOrganismName.includes(normalizedQuery)) ||
+    (assembly && assembly.includes(normalizeAssemblyQuery(normalizedQuery)))
+  );
+}
+
 export async function getSpeciesSuggestionsClient(
   query: string,
   limit = 20
 ): Promise<SpeciesSuggestion[]> {
-  const rows = await loadSpeciesProfiles();
-  const normalizedQuery = normalizeSpeciesQuery(query);
-  const filtered = normalizedQuery
-    ? rows.filter((item) => normalizeSpeciesQuery(item.name).includes(normalizedQuery))
-    : rows;
+  const taxonomyIndex = await loadTaxonomyIndex();
+  const speciesRankIndex = rankIndex(taxonomyIndex.ranks, "species");
+  const nameRankIndex = rankIndex(taxonomyIndex.ranks, "name");
+  const assemblyRankIndex = rankIndex(taxonomyIndex.ranks, "assembly");
 
-  return filtered.slice(0, limit).map((item) => ({
-    name: item.name,
-    slug: item.slug
-  }));
+  if (speciesRankIndex < 0) {
+    return [];
+  }
+
+  const normalizedQuery = normalizeSpeciesQuery(query);
+  const suggestions: SpeciesSuggestion[] = [];
+  const seenKeys = new Set<string>();
+
+  for (const row of taxonomyIndex.rows) {
+    if (!Array.isArray(row) || row.length !== taxonomyIndex.ranks.length) {
+      continue;
+    }
+
+    if (normalizedQuery && !rowMatchesSpeciesQuery(row, taxonomyIndex.ranks, normalizedQuery)) {
+      continue;
+    }
+
+    const rawSpecies = (row[speciesRankIndex] ?? "").trim();
+    if (!rawSpecies || rawSpecies === "-") {
+      continue;
+    }
+
+    const name = formatSpeciesName(rawSpecies);
+    if (!name) {
+      continue;
+    }
+
+    const slug = speciesNameToSlug(name);
+    const assembly =
+      assemblyRankIndex >= 0 ? (row[assemblyRankIndex] ?? "").trim() || undefined : undefined;
+    const dedupeKey = assembly ? `${slug}\t${assembly}` : slug;
+
+    if (seenKeys.has(dedupeKey)) {
+      continue;
+    }
+    seenKeys.add(dedupeKey);
+
+    suggestions.push({
+      name,
+      slug,
+      ncbiOrganismName:
+        nameRankIndex >= 0 ? (row[nameRankIndex] ?? "").trim() || undefined : undefined,
+      assembly
+    });
+
+    if (suggestions.length >= limit) {
+      break;
+    }
+  }
+
+  return suggestions;
 }
 
 export async function getAllSpeciesProfilesClient(): Promise<SpeciesProfile[]> {

@@ -2,6 +2,10 @@ export function normalizeSpeciesQuery(value: string): string {
   return value.toLowerCase().trim();
 }
 
+export function normalizeAssemblyQuery(value: string): string {
+  return value.toLowerCase().trim().replace(/^(gb_|rs_)/i, "");
+}
+
 export function stripTaxonomyPrefix(value: string): string {
   return value.replace(/^[a-z]__/i, "").trim();
 }

@@ -133,6 +133,17 @@ export default function SpeciesIndexClient() {
             {!isLoading && !detailLoading && !loadError && !detailError && selectedSpecies && flagellaContent && operonContent ? (
               <>
                 <h1 className="species-profile-title">Species: {selectedSpecies.name}</h1>
+                <h2>Metadata</h2>
+                <dl className="species-taxonomy species-genome-meta">
+                  <div>
+                    <dt>NCBI Organism Name</dt>
+                    <dd>{selectedSpecies.ncbiOrganismName ?? "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Genome Assembly ID</dt>
+                    <dd>{selectedSpecies.assembly ?? "—"}</dd>
+                  </div>
+                </dl>
                 <h2>Taxonomy</h2>
                 {selectedSpecies.summary.trim() ? <p>{selectedSpecies.summary}</p> : null}
                 <dl className="species-taxonomy">

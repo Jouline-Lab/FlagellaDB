@@ -116,7 +116,6 @@ export const CUSTOM_GENE_ROW_ORDER = [
   "LdtR",
   "MotK",
   "MotC",
-  "DUF3383",
   "FlhC",
   "FlhD",
   "FlhE",

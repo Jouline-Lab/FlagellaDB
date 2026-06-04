@@ -8,7 +8,28 @@ import { geneNameToSlug } from "@/lib/flagellaGeneClassification";
 import { speciesNameToSlug } from "@/lib/speciesNaming";
 import { withBasePath } from "@/lib/assetPaths";
 
-const modelSpecies = ["Escherichia coli", "Bacillus subtilis", "Pseudomonas aeruginosa"];
+const modelSpeciesExamples = [
+  {
+    speciesLabel: "Escherichia coli",
+    assemblyLabel: "GCF_003697165.2",
+    slug: speciesNameToSlug("Escherichia coli")
+  },
+  {
+    speciesLabel: "Bacillus subtilis",
+    assemblyLabel: "GCF_000009045.1",
+    slug: speciesNameToSlug("Bacillus subtilis")
+  },
+  {
+    speciesLabel: "Pseudomonas aeruginosa",
+    assemblyLabel: "GCF_001457615.1",
+    slug: speciesNameToSlug("Pseudomonas aeruginosa")
+  },
+  {
+    speciesLabel: "Campylobacter_D jejuni_A",
+    assemblyLabel: "GCA_000163995.1",
+    slug: speciesNameToSlug("Campylobacter_D jejuni_A")
+  }
+];
 const modelGenes = ["FliG", "FlgB", "MotA"];
 
 const HOME_STATS_PATH = "/home-stats.json";
@@ -102,40 +123,65 @@ export default function HomeHeroSearch() {
 
         <ScopeSearchBar variant="hero" onScopeChange={setScope} />
 
-        <div className="hero-model-organisms" aria-label="Example searches">
-          <span className="hero-model-label">Examples:</span>
-          <span className="hero-model-list">
-            {scope === "species"
-              ? modelSpecies.map((name, index) => (
-                  <span key={name}>
-                    <button
-                      type="button"
-                      className="hero-model-link"
-                      onClick={() => router.push(speciesPageHref(speciesNameToSlug(name)))}
-                    >
-                      {name}
-                    </button>
-                    {index < modelSpecies.length - 1 ? (
-                      <span className="hero-model-separator">, </span>
-                    ) : null}
-                  </span>
-                ))
-              : modelGenes.map((name, index) => (
-                  <span key={name}>
-                    <button
-                      type="button"
-                      className="hero-model-link"
-                      onClick={() => router.push(genePageHref(geneNameToSlug(name)))}
-                    >
-                      {name}
-                    </button>
-                    {index < modelGenes.length - 1 ? (
-                      <span className="hero-model-separator">, </span>
-                    ) : null}
-                  </span>
-                ))}
-          </span>
-        </div>
+        {scope === "species" ? (
+          <div className="hero-model-examples">
+            <div className="hero-model-organisms" aria-label="Example searches">
+              <div className="hero-model-example-rows">
+                <span className="hero-model-list">
+                  {modelSpeciesExamples.map((example, index) => (
+                    <span key={example.speciesLabel}>
+                      <button
+                        type="button"
+                        className="hero-model-link"
+                        onClick={() => router.push(speciesPageHref(example.slug))}
+                      >
+                        {example.speciesLabel}
+                      </button>
+                      {index < modelSpeciesExamples.length - 1 ? (
+                        <span className="hero-model-separator">, </span>
+                      ) : null}
+                    </span>
+                  ))}
+                </span>
+                <span className="hero-model-list">
+                  {modelSpeciesExamples.map((example, index) => (
+                    <span key={example.assemblyLabel}>
+                      <button
+                        type="button"
+                        className="hero-model-link"
+                        onClick={() => router.push(speciesPageHref(example.slug))}
+                      >
+                        {example.assemblyLabel}
+                      </button>
+                      {index < modelSpeciesExamples.length - 1 ? (
+                        <span className="hero-model-separator">, </span>
+                      ) : null}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="hero-model-organisms hero-model-organisms-standalone" aria-label="Example searches">
+            <span className="hero-model-list">
+              {modelGenes.map((name, index) => (
+                <span key={name}>
+                  <button
+                    type="button"
+                    className="hero-model-link"
+                    onClick={() => router.push(genePageHref(geneNameToSlug(name)))}
+                  >
+                    {name}
+                  </button>
+                  {index < modelGenes.length - 1 ? (
+                    <span className="hero-model-separator">, </span>
+                  ) : null}
+                </span>
+              ))}
+            </span>
+          </div>
+        )}
 
         {hasAnyStat ? (
           <div className="hero-stats" aria-label="Database statistics">

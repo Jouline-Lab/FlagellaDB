@@ -23,3 +23,10 @@ pnpm-debug.log*
 
 # large gzipped MSA files (too big for GitHub; host externally / Git LFS)
 /public/gzip_MSA/
+
+# WIP operon summary tool (local dev only; not wired to site nav)
+/app/operon-summary/
+/src/lib/operonSummary/
+/src/components/operonSummary/
+/scripts/operon-summary/
+/public/operon-summary/

@@ -1,5 +1,6 @@
 import { withBasePath } from "@/lib/assetPaths";
 import { classifyGene } from "@/lib/flagellaGeneClassification";
+import { FLAGELLA_CATEGORY_ORDER } from "@/lib/flagellaCategoryColors";
 import { formatSpeciesName, normalizeSpeciesQuery } from "@/lib/speciesNaming";
 import type { SpeciesFlagellaContent } from "@/lib/speciesData";
 
@@ -20,17 +21,6 @@ type SpeciesFlagellaIndex = {
   geneNames: string[];
   species: Record<string, IndexedSpecies>;
 };
-
-const GROUP_ORDER = [
-  "Basal body & hook",
-  "Motor & switch",
-  "Export apparatus",
-  "Filament & junction",
-  "Regulation",
-  "Chaperones & assembly factors",
-  "Flagellar structural proteins",
-  "Other flagella-associated genes"
-] as const;
 
 let indexPromise: Promise<SpeciesFlagellaIndex> | null = null;
 
@@ -84,7 +74,7 @@ export async function getSpeciesFlagellaContentClient(
     groupsMap.set(groupName, group);
   }
 
-  const groups = GROUP_ORDER.map((name) => {
+  const groups = FLAGELLA_CATEGORY_ORDER.map((name) => {
     const group = groupsMap.get(name) ?? { name, totalCount: 0, genes: [] };
     return {
       ...group,

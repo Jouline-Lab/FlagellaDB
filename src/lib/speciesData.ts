@@ -1,6 +1,8 @@
 export type SpeciesSuggestion = {
   name: string;
   slug: string;
+  ncbiOrganismName?: string;
+  assembly?: string;
 };
 
 export type SpeciesProfile = SpeciesSuggestion & {

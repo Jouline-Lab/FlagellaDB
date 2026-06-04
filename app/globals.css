@@ -760,12 +760,30 @@ a {
 }
 
 .hero-model-organisms {
-  margin-top: 0.65rem;
+  margin-top: 0;
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   gap: 0.35rem;
+}
+
+.hero-model-examples {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-model-example-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.hero-model-organisms-standalone {
+  margin-top: 0.65rem;
 }
 
 .hero-stats {
@@ -1126,6 +1144,16 @@ a {
   font-weight: 600;
   color: var(--hero-title-color);
   letter-spacing: -0.02em;
+}
+
+.species-genome-meta {
+  margin-top: 0;
+}
+
+.species-profile-title + h2,
+.species-card h2 + .species-taxonomy,
+.species-genome-meta + h2 {
+  margin-top: 1rem;
 }
 
 .species-card p {
@@ -1924,6 +1952,22 @@ a {
 
 .autocomplete-item-active {
   background: var(--dropdown-hover);
+}
+
+.autocomplete-item-stacked {
+  display: block;
+  line-height: 1.35;
+}
+
+.autocomplete-item-label {
+  display: block;
+}
+
+.autocomplete-item-meta {
+  display: block;
+  margin-top: 0.12rem;
+  font-size: 0.82em;
+  color: var(--text-soft);
 }
 
 .autocomplete-empty {

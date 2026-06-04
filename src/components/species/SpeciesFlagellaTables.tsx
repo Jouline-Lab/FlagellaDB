@@ -34,7 +34,6 @@ function splitGroupsIntoBalancedColumns(groups: SpeciesFlagellaContent["groups"]
   const used = new Set<string>();
 
   const leftOrder = [
-    "Flagellar structural proteins",
     "Export apparatus",
     "Motor & switch",
     "Filament & junction",
@@ -42,6 +41,7 @@ function splitGroupsIntoBalancedColumns(groups: SpeciesFlagellaContent["groups"]
   ] as const;
   const rightOrder = [
     "Basal body & hook",
+    "LP-ring & assembly",
     "Regulation",
     "Other flagella-associated genes"
   ] as const;

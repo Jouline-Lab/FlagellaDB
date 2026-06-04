@@ -7,6 +7,13 @@ const TSV_FILENAME = "flagellar_genes_phyletic_distribution.tsv";
 const TSV_PATH = path.join(process.cwd(), "public", TSV_FILENAME);
 const OUTPUT_PATH = path.join(process.cwd(), "public", "species-flagella-index.json");
 
+// Genes removed from the database; excluded from species pages.
+const EXCLUDED_GENE_NAMES = new Set(["ldtr", "transglutaminase", "duf3383"]);
+
+function normalizeGeneName(value) {
+  return value.replace(/_count$/i, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 function formatSpeciesName(value) {
   return value.replace(/^[a-z]__/i, "").trim();
 }
@@ -59,6 +66,7 @@ function buildGeneDefs(headers) {
 
   return Array.from(map.values())
     .filter((def) => def.countIdx >= 0)
+    .filter((def) => !EXCLUDED_GENE_NAMES.has(normalizeGeneName(def.geneName)))
     .sort((a, b) => a.geneName.localeCompare(b.geneName));
 }
 

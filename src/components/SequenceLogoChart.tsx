@@ -8,7 +8,14 @@ import { DownloadActionButton } from '@/components/DownloadActionButton';
 import { withBasePath } from '@/lib/assetPaths';
 import { getUntrimmedMsaGzipHref } from '@/lib/browserGenes';
 import { getSpeciesSuggestionsClient } from '@/lib/browserSpecies';
+import type { SpeciesSuggestion } from '@/lib/speciesData';
+import SpeciesSuggestionOption from '@/components/search/SpeciesSuggestionOption';
 import { formatSpeciesName, normalizeSpeciesQuery } from '@/lib/speciesNaming';
+import {
+  findBestSpeciesSuggestionMatch,
+  SPECIES_SEARCH_ARIA_LABEL,
+  SPECIES_SEARCH_PLACEHOLDER_LOGO
+} from '@/lib/speciesSearchUi';
 import {
   STANDARD_AMINO_ACIDS,
   calculateLogoDataFromColumnStats,
@@ -45,11 +52,6 @@ type SequenceLogoChartProps = {
   speciesGeneIdsByName?: Record<string, { gtdb: string[]; ncbi: Array<string | null> }>;
   onLoaded?: () => void;
   height?: number;
-};
-
-type SpeciesSuggestion = {
-  name: string;
-  slug: string;
 };
 
 type SelectedSpeciesEntry = {
@@ -1233,7 +1235,7 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
                 <input
                   type="text"
                   className="species-search-input"
-                  placeholder="Add species to compare against the logo..."
+                  placeholder={SPECIES_SEARCH_PLACEHOLDER_LOGO}
                   value={query}
                   onFocus={() => {
                     if (hideTimerRef.current) {
@@ -1277,14 +1279,17 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
                     if (event.key === 'Enter') {
                       event.preventDefault();
                       const match =
-                        suggestions[highlightedSuggestionIndex] ??
-                        suggestions[0];
+                        (highlightedSuggestionIndex >= 0 &&
+                        highlightedSuggestionIndex < suggestions.length
+                          ? suggestions[highlightedSuggestionIndex]
+                          : undefined) ?? findBestSpeciesSuggestionMatch(query, suggestions);
                       if (match) {
                         void addSpecies(match);
                       }
+                      return;
                     }
                   }}
-                  aria-label="Add species sequence"
+                  aria-label={SPECIES_SEARCH_ARIA_LABEL}
                   role="combobox"
                   aria-autocomplete="list"
                   aria-expanded={isSearchOpen && suggestions.length > 0}
@@ -1308,10 +1313,10 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
                         ref={(element) => {
                           suggestionItemRefs.current[index] = element;
                         }}
-                        key={item.slug}
-                        id={`species-suggestion-${item.slug}`}
+                        key={`${item.slug}-${item.assembly ?? index}`}
+                        id={`species-suggestion-${item.slug}-${index}`}
                         type="button"
-                        className={`autocomplete-item${
+                        className={`autocomplete-item autocomplete-item-stacked${
                           index === highlightedSuggestionIndex ? ' autocomplete-item-active' : ''
                         }`}
                         onMouseEnter={() => setHighlightedSuggestionIndex(index)}
@@ -1322,7 +1327,7 @@ const SequenceLogoChart: React.FC<SequenceLogoChartProps> = ({
                         role="option"
                         aria-selected={index === highlightedSuggestionIndex}
                       >
-                        {item.name}
+                        <SpeciesSuggestionOption item={item} />
                       </button>
                     ))}
                   </div>

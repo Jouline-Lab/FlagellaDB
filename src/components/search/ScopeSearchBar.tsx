@@ -7,7 +7,15 @@ import { getGeneSuggestionsClient } from "@/lib/browserGenes";
 import { getSpeciesSuggestionsClient } from "@/lib/browserSpecies";
 import { genePageHref, speciesPageHref } from "@/lib/pageEntityQuery";
 import { geneNameToSlug } from "@/lib/flagellaGeneClassification";
-import { normalizeSpeciesQuery, speciesNameToSlug } from "@/lib/speciesNaming";
+import { speciesNameToSlug } from "@/lib/speciesNaming";
+import type { SpeciesSuggestion } from "@/lib/speciesData";
+import SpeciesSuggestionOption from "@/components/search/SpeciesSuggestionOption";
+import {
+  findBestSpeciesSuggestionMatch,
+  SPECIES_SEARCH_ARIA_LABEL,
+  SPECIES_SEARCH_PLACEHOLDER_COMPACT,
+  SPECIES_SEARCH_PLACEHOLDER_HERO
+} from "@/lib/speciesSearchUi";
 
 export type ScopeSearchBarVariant = "hero" | "compact";
 
@@ -18,10 +26,6 @@ type ScopeSearchBarProps = {
   className?: string;
   onScopeChange?: (scope: SearchScope) => void;
 };
-
-function normalizeSpecies(value: string): string {
-  return normalizeSpeciesQuery(value);
-}
 
 export default function ScopeSearchBar({ variant, className, onScopeChange }: ScopeSearchBarProps) {
   const router = useRouter();
@@ -59,7 +63,7 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
 
   const [scope, setScope] = useState<SearchScope>("species");
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<Array<{ name: string; slug: string }>>([]);
+  const [suggestions, setSuggestions] = useState<SpeciesSuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [scopeMenuOpen, setScopeMenuOpen] = useState(false);
   const scopeWrapRef = useRef<HTMLDivElement | null>(null);
@@ -133,9 +137,7 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
     }
 
     if (scope === "species") {
-      const normalizedQuery = normalizeSpecies(q);
-      const match =
-        suggestions.find((item) => normalizeSpecies(item.name) === normalizedQuery) ?? suggestions[0];
+      const match = findBestSpeciesSuggestionMatch(q, suggestions);
       if (match) {
         router.push(speciesPageHref(match.slug ?? speciesNameToSlug(match.name)));
       }
@@ -152,7 +154,7 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
     }
   };
 
-  const pickSuggestion = (item: { name: string; slug: string }) => {
+  const pickSuggestion = (item: SpeciesSuggestion) => {
     setIsOpen(false);
     if (scope === "species") {
       router.push(speciesPageHref(item.slug ?? speciesNameToSlug(item.name)));
@@ -164,10 +166,10 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
   const placeholder =
     variant === "hero"
       ? scope === "species"
-        ? "Search for a species (e.g., Escherichia coli)"
+        ? SPECIES_SEARCH_PLACEHOLDER_HERO
         : "Search for a gene (e.g., FliG)"
       : scope === "species"
-        ? "Species name…"
+        ? SPECIES_SEARCH_PLACEHOLDER_COMPACT
         : "Gene name…";
 
   return (
@@ -254,7 +256,7 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
             onBlur={() => {
               hideTimerRef.current = setTimeout(() => setIsOpen(false), 120);
             }}
-            aria-label={scope === "species" ? "Search species" : "Search genes"}
+            aria-label={scope === "species" ? SPECIES_SEARCH_ARIA_LABEL : "Search genes"}
             autoComplete="off"
           />
           {isOpen && suggestions.length > 0 ? (
@@ -264,13 +266,13 @@ export default function ScopeSearchBar({ variant, className, onScopeChange }: Sc
             >
               {suggestions.map((item) => (
                 <button
-                  key={`${scope}-${item.slug}-${item.name}`}
+                  key={`${scope}-${item.slug}-${item.assembly ?? item.name}`}
                   type="button"
-                  className="autocomplete-item"
+                  className="autocomplete-item autocomplete-item-stacked"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => pickSuggestion(item)}
                 >
-                  {item.name}
+                  <SpeciesSuggestionOption item={item} />
                 </button>
               ))}
             </div>

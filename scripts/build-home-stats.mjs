@@ -11,6 +11,13 @@ const TSV_PATH = path.join(
 const OUTPUT_PATH = path.join(process.cwd(), "public", "home-stats.json");
 const BACTERIAL_DOMAIN_VALUE = "d__Bacteria";
 
+// Genes removed from the database; excluded from homepage gene/protein counts.
+const EXCLUDED_GENE_NAMES = new Set(["ldtr", "transglutaminase", "duf3383"]);
+
+function normalizeGeneName(value) {
+  return value.replace(/_count$/i, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 function toPositiveNumber(rawValue) {
   const parsed = Number(rawValue);
   if (!Number.isFinite(parsed) || parsed <= 0) {
@@ -53,6 +60,7 @@ async function buildHomeStats() {
       geneCountIndexes = headers
         .map((header, index) => ({ header, index }))
         .filter((entry) => entry.header.endsWith("_count"))
+        .filter((entry) => !EXCLUDED_GENE_NAMES.has(normalizeGeneName(entry.header)))
         .map((entry) => entry.index);
 
       if (geneCountIndexes.length === 0) {

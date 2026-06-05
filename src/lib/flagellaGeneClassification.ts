@@ -19,7 +19,7 @@ const GENE_CATEGORY: Record<string, string> = {
   flgj: "LP-ring & assembly",
   flga: "LP-ring & assembly",
 
-  // Motor & switch (stator, C-ring/switch, motor accessories, H-ring, collar)
+  // Motor & switch (stator, C-ring/switch, motor accessories, H-ring, collar, stator chaperone)
   mota: "Motor & switch",
   motb: "Motor & switch",
   flig: "Motor & switch",
@@ -39,6 +39,7 @@ const GENE_CATEGORY: Record<string, string> = {
   flcb: "Motor & switch",
   flcc: "Motor & switch",
   flcd: "Motor & switch",
+  flgx: "Motor & switch",
 
   // Export apparatus (export gate, ATPase complex, MS-ring)
   flha: "Export apparatus",

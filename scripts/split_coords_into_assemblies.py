@@ -132,7 +132,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # Set the current working
 os.chdir(script_dir)
 #%%
-main_tsv = r"..\..\Flagella\operons\flagellar_genes_homologs_June1_coordinates.tsv"              # your coordinates output
+main_tsv = r"..\..\Flagella\operons\flagellar_genes_homologs_June5_coordinates.tsv"              # your coordinates output
 mapping  = r"..\..\assembly_genome_mapping_corrected.tsv"    # columns: assembly, genome_id
 out_dir  = r"..\public\operon_coords"
 

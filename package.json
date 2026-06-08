@@ -14,6 +14,7 @@
     "precompute:gene-logos": "node scripts/precompute-gene-logos.mjs",
     "check-assembly-duplicates": "node scripts/check-assembly-duplicates.mjs",
     "build:flagella-svg-labels": "node scripts/build-flagella-svg-labels.mjs",
+    "build:flagella-database-svg": "node scripts/build-flagella-database-svg.mjs",
     "build:home-stats": "node scripts/build-home-stats.mjs"
   },
   "dependencies": {

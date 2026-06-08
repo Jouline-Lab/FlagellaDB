@@ -3,6 +3,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import SpeciesFlagellaTables from "@/components/species/SpeciesFlagellaTables";
 import { withBasePath } from "@/lib/assetPaths";
+import {
+  countForFigureGeneKeys,
+  logFlagellaFigureGeneCoverage,
+  primaryFigureGeneKey,
+  resolveFigureGeneKeys
+} from "@/lib/flagellaFigureGeneMap";
+import {
+  applyFigureTextColors,
+  figureGeneFill,
+  figureShapeStroke,
+  figureTextLabelKeys,
+  indexFigureTextLabels,
+  readSpeciesTableHeaderFill
+} from "@/lib/speciesFlagellaFigureStyle";
 import type { SpeciesFlagellaContent } from "@/lib/speciesData";
 
 type SpeciesFlagellaInteractivePanelProps = {
@@ -18,6 +32,7 @@ type TooltipState = {
   x: number;
   y: number;
   count: number;
+  label: string;
 };
 
 function normalizeGeneKey(value: string): string {
@@ -28,11 +43,9 @@ function rowElementId(geneKey: string): string {
   return `species-gene-row-${geneKey}`;
 }
 
-function colorFromCount(count: number, maxCount: number): string {
-  if (count <= 0) return "transparent";
-  const normalized = maxCount <= 1 ? 1 : Math.log1p(count) / Math.log1p(maxCount);
-  const lightness = 82 - normalized * 38;
-  return `hsl(217 90% ${lightness.toFixed(1)}%)`;
+function nodeMatchesFocusedGene(rawGene: string, focusedGeneKey: string | null): boolean {
+  if (!focusedGeneKey) return false;
+  return resolveFigureGeneKeys(rawGene).includes(focusedGeneKey);
 }
 
 export default function SpeciesFlagellaInteractivePanel({
@@ -41,6 +54,7 @@ export default function SpeciesFlagellaInteractivePanel({
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const objectRef = useRef<HTMLObjectElement | null>(null);
   const flashTimerRef = useRef<number | null>(null);
+  const coverageLoggedRef = useRef(false);
   const [svgLoadedAt, setSvgLoadedAt] = useState(0);
   const [svgLoadError, setSvgLoadError] = useState(false);
   const [activeGeneKey, setActiveGeneKey] = useState<string | null>(null);
@@ -50,7 +64,8 @@ export default function SpeciesFlagellaInteractivePanel({
     visible: false,
     x: 0,
     y: 0,
-    count: 0
+    count: 0,
+    label: ""
   });
 
   const geneInfoByKey = useMemo(() => {
@@ -63,22 +78,12 @@ export default function SpeciesFlagellaInteractivePanel({
     return map;
   }, [groups]);
 
-  const maxCount = useMemo(() => {
-    let max = 0;
-    for (const gene of geneInfoByKey.values()) {
-      if (gene.count > max) max = gene.count;
-    }
-    return max;
-  }, [geneInfoByKey]);
-
   const focusedGeneKey = hoveredGeneKey ?? activeGeneKey;
 
-  function updateTooltipPosition(event: MouseEvent, count: number) {
+  function updateTooltipPosition(event: MouseEvent, count: number, label: string) {
     const objectRect = objectRef.current?.getBoundingClientRect();
     if (!objectRect) return;
 
-    // Mouse events inside <object> may report coordinates in the inner SVG viewport.
-    // Convert those to outer viewport coordinates for stable tooltip tracking.
     const comesFromInnerSvg = Boolean(event.view && event.view !== window);
     const clientX = comesFromInnerSvg ? objectRect.left + event.clientX : event.clientX;
     const clientY = comesFromInnerSvg ? objectRect.top + event.clientY : event.clientY;
@@ -87,7 +92,7 @@ export default function SpeciesFlagellaInteractivePanel({
     const maxY = window.innerHeight - 34;
     const x = Math.min(Math.max(clientX + 12, 8), maxX);
     const y = Math.min(Math.max(clientY + 12, 8), maxY);
-    setTooltip({ visible: true, x, y, count });
+    setTooltip({ visible: true, x, y, count, label });
   }
 
   function fitSvgToContent() {
@@ -145,6 +150,16 @@ export default function SpeciesFlagellaInteractivePanel({
     }, 1300);
   }
 
+  function focusFirstAvailableRow(geneKeys: readonly string[]) {
+    for (const geneKey of geneKeys) {
+      if (document.getElementById(rowElementId(geneKey))) {
+        setActiveGeneKey(geneKey);
+        triggerRowFocus(geneKey);
+        return;
+      }
+    }
+  }
+
   useEffect(() => {
     return () => {
       if (flashTimerRef.current != null) {
@@ -154,42 +169,67 @@ export default function SpeciesFlagellaInteractivePanel({
   }, []);
 
   useEffect(() => {
+    if (coverageLoggedRef.current) return;
+    coverageLoggedRef.current = true;
+    logFlagellaFigureGeneCoverage(geneInfoByKey);
+  }, [geneInfoByKey]);
+
+  useEffect(() => {
     const svgDoc = objectRef.current?.contentDocument;
     if (!svgDoc) return;
 
     const geneNodes = Array.from(svgDoc.querySelectorAll<SVGElement>("[data-gene]"));
+    const textIndex = indexFigureTextLabels(svgDoc);
+    const presentLabelKeys = new Set<string>();
+    const tableHeaderFill = readSpeciesTableHeaderFill();
     const listeners: Array<() => void> = [];
 
     for (const node of geneNodes) {
       const rawGene = node.getAttribute("data-gene") ?? node.id;
-      const geneKey = normalizeGeneKey(rawGene);
-      const geneInfo = geneInfoByKey.get(geneKey);
-      const count = geneInfo?.count ?? 0;
-      const isFocused = focusedGeneKey === geneKey;
+      const geneKeys = resolveFigureGeneKeys(rawGene);
+      const primaryKey = primaryFigureGeneKey(geneKeys);
+      const count = countForFigureGeneKeys(geneKeys, geneInfoByKey);
+      const isPresent = count > 0;
+      const isFocused = nodeMatchesFocusedGene(rawGene, focusedGeneKey);
 
-      const fill = colorFromCount(count, maxCount);
+      if (isPresent) {
+        for (const labelKey of figureTextLabelKeys(geneKeys)) {
+          presentLabelKeys.add(labelKey);
+        }
+      }
+
+      const baseFill = figureGeneFill(isPresent, tableHeaderFill);
+      const { fill, stroke, strokeWidth } = figureShapeStroke(baseFill, isFocused, isPresent);
+
       node.style.setProperty("fill", fill, "important");
-      node.style.setProperty("stroke", isFocused ? "#f59e0b" : "#475569", "important");
-      node.style.setProperty("stroke-width", isFocused ? "2.8" : "1.2", "important");
-      node.style.setProperty("cursor", "pointer");
+      node.style.setProperty("stroke", stroke, "important");
+      node.style.setProperty("stroke-width", strokeWidth, "important");
+      node.style.setProperty("cursor", geneKeys.length > 0 ? "pointer" : "default");
       node.style.setProperty("pointer-events", "all");
-      node.style.setProperty("transition", "stroke 140ms ease, stroke-width 140ms ease, filter 140ms ease");
-      node.style.setProperty("filter", isFocused ? "drop-shadow(0 0 2px rgba(245, 158, 11, 0.75))" : "none");
+      node.style.setProperty(
+        "transition",
+        "fill 140ms ease, stroke 140ms ease, stroke-width 140ms ease"
+      );
 
       const onMouseEnter = () => {
-        setHoveredGeneKey(geneKey);
-        setActiveGeneKey(geneKey);
+        const hoverKey =
+          geneKeys.find((key) => geneInfoByKey.has(key)) ?? primaryKey;
+        if (hoverKey) {
+          setHoveredGeneKey(hoverKey);
+          setActiveGeneKey(hoverKey);
+        }
       };
       const onMouseMove = (event: MouseEvent) => {
-        updateTooltipPosition(event, count);
+        updateTooltipPosition(event, count, rawGene.replace(/,/g, " / "));
       };
       const onMouseLeave = () => {
-        setHoveredGeneKey((current) => (current === geneKey ? null : current));
+        setHoveredGeneKey((current) =>
+          current != null && geneKeys.includes(current) ? null : current
+        );
         setTooltip((current) => ({ ...current, visible: false }));
       };
       const onClick = () => {
-        setActiveGeneKey(geneKey);
-        triggerRowFocus(geneKey);
+        focusFirstAvailableRow(geneKeys);
       };
 
       node.addEventListener("mouseenter", onMouseEnter);
@@ -204,10 +244,12 @@ export default function SpeciesFlagellaInteractivePanel({
       });
     }
 
+    applyFigureTextColors(textIndex, presentLabelKeys);
+
     return () => {
       for (const cleanup of listeners) cleanup();
     };
-  }, [focusedGeneKey, geneInfoByKey, maxCount, svgLoadedAt]);
+  }, [focusedGeneKey, geneInfoByKey, svgLoadedAt]);
 
   return (
     <section className="species-flagella-interactive">
@@ -229,7 +271,7 @@ export default function SpeciesFlagellaInteractivePanel({
         </object>
         {tooltip.visible ? (
           <div className="species-flagella-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
-            Count: {tooltip.count.toLocaleString()}
+            {tooltip.label}: {tooltip.count.toLocaleString()}
           </div>
         ) : null}
       </div>
@@ -240,8 +282,8 @@ export default function SpeciesFlagellaInteractivePanel({
 
       {svgLoadError ? (
         <p className="species-flagella-figure-error">
-          Could not load <code>Flagella_figure.labeled.svg</code>. Run the SVG labeling pipeline and
-          refresh this page.
+          Could not load <code>Flagella_figure.labeled.svg</code>. Run{" "}
+          <code>npm run build:flagella-database-svg</code> and refresh this page.
         </p>
       ) : null}
 

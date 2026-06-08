@@ -48,6 +48,14 @@ function nodeMatchesFocusedGene(rawGene: string, focusedGeneKey: string | null):
   return resolveFigureGeneKeys(rawGene).includes(focusedGeneKey);
 }
 
+function resolveTextLabelGeneKeys(labelKey: string): string[] {
+  // SVG label uses "MotYX" while table tracks MotX and MotY separately.
+  if (labelKey === "motyx" || labelKey === "motxmoty") {
+    return ["motx", "moty"];
+  }
+  return [labelKey];
+}
+
 export default function SpeciesFlagellaInteractivePanel({
   groups
 }: SpeciesFlagellaInteractivePanelProps) {
@@ -242,6 +250,50 @@ export default function SpeciesFlagellaInteractivePanel({
         node.removeEventListener("mouseleave", onMouseLeave);
         node.removeEventListener("click", onClick);
       });
+    }
+
+    // Make text labels interactive as well: hover/click behaves like the shape.
+    for (const [labelKey, texts] of textIndex.entries()) {
+      const textGeneKeys = resolveTextLabelGeneKeys(labelKey);
+      const hasMatchingGene = textGeneKeys.some((key) => geneInfoByKey.has(key));
+      if (!hasMatchingGene) continue;
+
+      for (const text of texts) {
+        const onTextMouseEnter = () => {
+          const hoverKey = textGeneKeys.find((key) => geneInfoByKey.has(key)) ?? textGeneKeys[0];
+          if (hoverKey) {
+            setHoveredGeneKey(hoverKey);
+            setActiveGeneKey(hoverKey);
+          }
+        };
+        const onTextMouseMove = (event: MouseEvent) => {
+          const count = countForFigureGeneKeys(textGeneKeys, geneInfoByKey);
+          updateTooltipPosition(event, count, text.textContent?.trim() ?? labelKey);
+        };
+        const onTextMouseLeave = () => {
+          setHoveredGeneKey((current) =>
+            current != null && textGeneKeys.includes(current) ? null : current
+          );
+          setTooltip((current) => ({ ...current, visible: false }));
+        };
+        const onTextClick = () => {
+          focusFirstAvailableRow(textGeneKeys);
+        };
+
+        text.style.setProperty("cursor", "pointer");
+        text.style.setProperty("pointer-events", "all");
+        text.addEventListener("mouseenter", onTextMouseEnter);
+        text.addEventListener("mousemove", onTextMouseMove);
+        text.addEventListener("mouseleave", onTextMouseLeave);
+        text.addEventListener("click", onTextClick);
+
+        listeners.push(() => {
+          text.removeEventListener("mouseenter", onTextMouseEnter);
+          text.removeEventListener("mousemove", onTextMouseMove);
+          text.removeEventListener("mouseleave", onTextMouseLeave);
+          text.removeEventListener("click", onTextClick);
+        });
+      }
     }
 
     applyFigureTextColors(textIndex, presentLabelKeys);

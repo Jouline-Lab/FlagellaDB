@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
-const isGithubActions = process.env.GITHUB_ACTIONS === "true";
-const repositoryName =
-  process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "FlagellaDB";
-const basePath = isGithubActions ? `/${repositoryName}` : "";
+// GitHub Pages project sites are served at /<repo> on github.io, but custom domains
+// (e.g. flagelladb.org) are served from the domain root. Use an empty basePath so
+// assets resolve correctly on the custom domain.
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

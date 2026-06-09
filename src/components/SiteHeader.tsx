@@ -21,8 +21,8 @@ export default function SiteHeader() {
     <header className="topbar">
       <div className="container topbar-inner">
         <Link href="/" className="brand brand-link">
-          <span className="brand-line">Flagellar Evolution</span>
-          <span className="brand-line">Database</span>
+        <span className="brand-line">Flagella</span>
+        <span className="brand-line">Database</span>
         </Link>
         <div className="topbar-right">
           <nav aria-label="Main navigation">

@@ -39,6 +39,7 @@ type HomeStats = {
   uniqueGeneFamilies: number | null;
   bacterialGenomeAssemblies: number | null;
   bacterialRowsWithAnyGeneCount: number | null;
+  bacterialRowsWithMinimumGeneFamilies: number | null;
 };
 
 type HomeStatsPayload = {
@@ -47,6 +48,7 @@ type HomeStatsPayload = {
   totalGenes?: number;
   bacterialGenomeAssemblies?: number;
   bacterialRowsWithAnyGeneCount?: number;
+  bacterialRowsWithMinimumGeneFamilies?: number;
 };
 
 function formatCompactNumber(value: number | null): string {
@@ -63,7 +65,8 @@ export default function HomeHeroSearch() {
     totalProteinSequences: null,
     uniqueGeneFamilies: null,
     bacterialGenomeAssemblies: null,
-    bacterialRowsWithAnyGeneCount: null
+    bacterialRowsWithAnyGeneCount: null,
+    bacterialRowsWithMinimumGeneFamilies: null
   });
 
   useEffect(() => {
@@ -96,6 +99,11 @@ export default function HomeHeroSearch() {
             : null,
           bacterialRowsWithAnyGeneCount: Number.isFinite(payload?.bacterialRowsWithAnyGeneCount)
             ? Number(payload.bacterialRowsWithAnyGeneCount)
+            : null,
+          bacterialRowsWithMinimumGeneFamilies: Number.isFinite(
+            payload?.bacterialRowsWithMinimumGeneFamilies
+          )
+            ? Number(payload.bacterialRowsWithMinimumGeneFamilies)
             : null
         }));
       })
@@ -112,6 +120,7 @@ export default function HomeHeroSearch() {
     stats.totalProteinSequences !== null ||
     stats.uniqueGeneFamilies !== null ||
     stats.bacterialGenomeAssemblies !== null ||
+    stats.bacterialRowsWithMinimumGeneFamilies !== null ||
     stats.bacterialRowsWithAnyGeneCount !== null;
 
   return (
@@ -199,11 +208,11 @@ export default function HomeHeroSearch() {
             </div>
             <div className="hero-stat-card">
               <span className="hero-stat-value">
-                {`${formatCompactNumber(stats.bacterialRowsWithAnyGeneCount)} / ${formatCompactNumber(
-                  stats.bacterialGenomeAssemblies
-                )}`}
+                {`${formatCompactNumber(
+                  stats.bacterialRowsWithMinimumGeneFamilies ?? stats.bacterialRowsWithAnyGeneCount
+                )} / ${formatCompactNumber(stats.bacterialGenomeAssemblies)}`}
               </span>
-              <span className="hero-stat-label">Bacterial genomes with flagellar genes</span>
+              <span className="hero-stat-label">Bacterial genomes with minimum 25 genes</span>
             </div>
           </div>
         ) : null}

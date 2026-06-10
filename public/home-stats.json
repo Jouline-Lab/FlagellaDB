@@ -1,13 +1,15 @@
 {
   "version": 1,
   "sourceTsv": "flagellar_genes_phyletic_distribution.tsv",
-  "generatedAt": "2026-06-05T21:45:37.271Z",
-  "totalProteinSequences": 1476686,
+  "generatedAt": "2026-06-10T21:02:56.702Z",
+  "totalProteinSequences": 1475863,
   "uniqueGeneFamilies": 81,
   "totalGenes": 81,
   "bacterialGenomeAssemblies": 80789,
   "bacterialRowsWithAnyGeneCount": 50263,
-  "totalRows": 85205,
-  "rowsWithAnyGeneCount": 50913,
+  "bacterialRowsWithMinimumGeneFamilies": 28253,
+  "minimumDetectedGeneFamilies": 25,
+  "totalRows": 80789,
+  "rowsWithAnyGeneCount": 50263,
   "rowsWithAllGeneCountsNonZero": 0
 }

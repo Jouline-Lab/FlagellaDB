@@ -56,6 +56,10 @@ function resolveTextLabelGeneKeys(labelKey: string): string[] {
   return [labelKey];
 }
 
+function figureTooltipLabel(rawGene: string): string {
+  return rawGene.replace(/,/g, " / ");
+}
+
 export default function SpeciesFlagellaInteractivePanel({
   groups
 }: SpeciesFlagellaInteractivePanelProps) {
@@ -224,11 +228,10 @@ export default function SpeciesFlagellaInteractivePanel({
           geneKeys.find((key) => geneInfoByKey.has(key)) ?? primaryKey;
         if (hoverKey) {
           setHoveredGeneKey(hoverKey);
-          setActiveGeneKey(hoverKey);
         }
       };
       const onMouseMove = (event: MouseEvent) => {
-        updateTooltipPosition(event, count, rawGene.replace(/,/g, " / "));
+        updateTooltipPosition(event, count, figureTooltipLabel(rawGene));
       };
       const onMouseLeave = () => {
         setHoveredGeneKey((current) =>
@@ -259,25 +262,32 @@ export default function SpeciesFlagellaInteractivePanel({
       if (!hasMatchingGene) continue;
 
       for (const text of texts) {
+        const rawTextGene = text.getAttribute("data-text-gene") ?? text.getAttribute("data-gene");
+        const interactiveGeneKeys = rawTextGene
+          ? resolveFigureGeneKeys(rawTextGene)
+          : textGeneKeys;
         const onTextMouseEnter = () => {
-          const hoverKey = textGeneKeys.find((key) => geneInfoByKey.has(key)) ?? textGeneKeys[0];
+          const hoverKey =
+            interactiveGeneKeys.find((key) => geneInfoByKey.has(key)) ?? interactiveGeneKeys[0];
           if (hoverKey) {
             setHoveredGeneKey(hoverKey);
-            setActiveGeneKey(hoverKey);
           }
         };
         const onTextMouseMove = (event: MouseEvent) => {
-          const count = countForFigureGeneKeys(textGeneKeys, geneInfoByKey);
-          updateTooltipPosition(event, count, text.textContent?.trim() ?? labelKey);
+          const count = countForFigureGeneKeys(interactiveGeneKeys, geneInfoByKey);
+          const tooltipLabel = rawTextGene
+            ? figureTooltipLabel(rawTextGene)
+            : text.textContent?.trim() ?? labelKey;
+          updateTooltipPosition(event, count, tooltipLabel);
         };
         const onTextMouseLeave = () => {
           setHoveredGeneKey((current) =>
-            current != null && textGeneKeys.includes(current) ? null : current
+            current != null && interactiveGeneKeys.includes(current) ? null : current
           );
           setTooltip((current) => ({ ...current, visible: false }));
         };
         const onTextClick = () => {
-          focusFirstAvailableRow(textGeneKeys);
+          focusFirstAvailableRow(interactiveGeneKeys);
         };
 
         text.style.setProperty("cursor", "pointer");
@@ -344,7 +354,6 @@ export default function SpeciesFlagellaInteractivePanel({
         activeGeneKey={focusedGeneKey}
         flashedGeneKey={flashedGeneKey}
         onGeneHover={(geneKey) => {
-          setActiveGeneKey(geneKey);
           setHoveredGeneKey(geneKey);
         }}
         onGeneLeave={() => setHoveredGeneKey(null)}

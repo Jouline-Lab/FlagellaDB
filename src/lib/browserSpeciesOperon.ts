@@ -17,7 +17,7 @@ type CoordRow = {
   assembly: string;
 };
 
-const SMALL_GAP_THRESHOLD_BP = 1000;
+const SMALL_GAP_THRESHOLD_BP = 500;
 const TRACK_FLANK_BP = 500;
 
 let lineageRowsPromise: Promise<GtdbLineageRow[]> | null = null;

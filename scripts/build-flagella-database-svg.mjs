@@ -91,7 +91,7 @@ function injectStyle(svgText) {
   const overrideStyle = `
   <style id="flagella-auto-style">
     svg {
-      background: #ffffff;
+      background: transparent;
     }
     [data-gene] {
       fill: #ffffff !important;
@@ -144,6 +144,16 @@ function injectShapeGenes(svgText) {
     if (/\bdata-gene\s*=/.test(fullTag)) return fullTag;
     return upsertAttribute(`<${tagName}${attrsPart}>`, "data-gene", gene);
   });
+}
+
+function tagTextGeneOverrides(svgText) {
+  return svgText.replace(
+    /<text\b([^>]*)>(\s*<tspan\b[^>]*>\s*MotYX\s*<\/tspan>\s*)<\/text>/gi,
+    (full, attrsPart, inner) => {
+      if (/\bdata-text-gene\s*=/.test(full)) return full;
+      return `${upsertAttribute(`<text${attrsPart}>`, "data-text-gene", "MotX,MotY")}${inner}</text>`;
+    }
+  );
 }
 
 function tagMotEGroup(svgText) {
@@ -226,6 +236,7 @@ async function main() {
   svgText = tagMotEGroup(svgText);
   svgText = tagNestedFlgPanels(svgText);
   svgText = injectShapeGenes(svgText);
+  svgText = tagTextGeneOverrides(svgText);
   svgText = injectStyle(svgText);
 
   await mkdir(path.dirname(output), { recursive: true });

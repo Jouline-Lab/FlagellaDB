@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Info } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import PageShell from "@/components/layout/PageShell";
 import SpeciesFlagellaInteractivePanel from "@/components/species/SpeciesFlagellaInteractivePanel";
@@ -15,6 +16,30 @@ import type {
   SpeciesOperonContent,
   SpeciesProfile
 } from "@/lib/speciesData";
+
+function OperonSectionHint() {
+  return (
+    <span className="relative inline-flex align-middle shrink-0 group">
+      <button
+        type="button"
+        className="rounded-full p-0.5 text-[var(--text-soft)] hover:text-[var(--text)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+        aria-label="About operon organization"
+        aria-describedby="species-operon-organization-hint"
+      >
+        <Info className="w-4 h-4" strokeWidth={2} aria-hidden />
+      </button>
+      <span
+        id="species-operon-organization-hint"
+        role="tooltip"
+        className="pointer-events-none absolute left-1/2 bottom-[calc(100%+8px)] z-[100] w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 rounded-lg border border-[var(--surface-border)] bg-[var(--dropdown-bg)] px-3 py-2.5 text-left text-sm font-normal leading-relaxed text-[var(--text)] shadow-lg opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        Genes are grouped by assembly and contig, ordered by genomic coordinates, and drawn with
+        arrows indicating strand. Neighboring genes separated by 500 bp or less are shown on a
+        continuous baseline; larger intervals are compressed with a break marker.
+      </span>
+    </span>
+  );
+}
 
 export default function SpeciesIndexClient() {
   const router = useRouter();
@@ -193,7 +218,10 @@ export default function SpeciesIndexClient() {
               </article>
 
               <article className="species-card species-card-wide">
-                <h2>Operon Organization by Contig</h2>
+                <h2 className="species-section-title-with-hint">
+                  <span>Operon Organization by Contig</span>
+                  <OperonSectionHint />
+                </h2>
                 <SpeciesOperonTracks content={operonContent} />
               </article>
             </>

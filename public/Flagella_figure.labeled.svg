@@ -3,7 +3,7 @@
   <defs>
   <style id="flagella-auto-style">
     svg {
-      background: #ffffff;
+      background: transparent;
     }
     [data-gene] {
       fill: #ffffff !important;
@@ -232,7 +232,7 @@
   <rect id="rect40" class="cls-28" x="384.9976" y="191.1764" width="149.6104" height="18.8"/>
   <path data-gene="MotX,MotY" id="MotX_MotY" data-name="MotX/MotY" class="cls-14" d="M438.515,255.2034c-9.6907-4.3545-18.8371-8.9508-28.0923-14.2729-3.811-2.2982-5.9887-7.3784-4.8998-11.1281h0c1.0888-3.7497,5.5531-6.5317,9.7996-5.8059,10.3441,1.6934,20.2526,3.8706,30.3788,6.5317,4.1376,1.2096,5.7709,8.1041,3.811,14.9987h0c-1.9599,6.8946-6.9686,11.37-10.8885,9.6766h-.1089Z"/>
   <g id="text48" class="cls-7">
-    <text class="cls-2" transform="translate(409.1789 236.5909) rotate(16.3092)"><tspan x="0" y="0">MotYX</tspan></text>
+    <text data-text-gene="MotX,MotY" class="cls-2" transform="translate(409.1789 236.5909) rotate(16.3092)"><tspan x="0" y="0">MotYX</tspan></text>
   </g>
   <rect data-gene="FlgT" id="FlgT" class="cls-14" x="408.1" y="207.0764" width="31.4" height="18" rx="5.8" ry="5.8"/>
   <rect data-gene="FlgP" id="FlgP" class="cls-10" x="438" y="201.2764" width="28.6" height="15.8" rx="5.8" ry="5.8"/>

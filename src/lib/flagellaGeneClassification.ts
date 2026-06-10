@@ -96,7 +96,7 @@ const GENE_CATEGORY: Record<string, string> = {
   transglycosylase: "Other flagella-associated genes",
   duf1217: "Other flagella-associated genes",
   duf327: "Other flagella-associated genes",
-  duf6470: "Other flagella-associated genes",
+  yvie: "Other flagella-associated genes",
   putative: "Other flagella-associated genes",
   yvyf: "Other flagella-associated genes"
 };

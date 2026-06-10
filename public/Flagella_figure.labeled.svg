@@ -93,16 +93,16 @@
         font-style: italic;
       }
 
-      .cls-26 {
-        fill: #606161;
-      }
-
       .cls-21 {
         stroke-dasharray: 2 4;
       }
 
-      .cls-27 {
+      .cls-26 {
         letter-spacing: -.0181em;
+      }
+
+      .cls-27 {
+        letter-spacing: -.0552em;
       }
 
       .cls-22, .cls-23 {
@@ -147,12 +147,12 @@
   <rect data-gene="FliL" id="FliL" class="cls-10" x="461.0494" y="101.4568" width="35.4734" height="17.9818" rx="6.6" ry="6.6"/>
   <rect data-gene="FliA" id="FliA" class="cls-13" x="136.0143" y="454.9682" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <rect id="rect135" class="cls-28" x="384.522" y="471.0949" width="150.1739" height="24.2297"/>
-  <rect id="rect11" class="cls-28" x="0" y="298.1764" width="355.2" height="24"/>
+  <rect id="rect11" class="cls-28" x="0" y="298.1764" width="353.8" height="24"/>
   <path data-gene="FlhA" id="FlhA" class="cls-13" d="M138.4,322.4764l4.6575,13.2894c1.3918,1.9004,10.4975-1.4546,12.5147.0263,2.4402,1.7915,4.3616,9.9247,7.469,10.9969,3.9209,1.3529,7.1644-24.3127,7.1644-24.3127l-14.7056-12.2928-17,12.2928h-.1Z"/>
   <path data-gene="FliG" id="FliG" class="cls-13" d="M278.0685,322.1764h-21.4099l-8.5441,15.5674c1.4744,1.1493,3.3315,1.8326,5.3541,1.8326h24.6c4.8198,0,8.7-3.8802,8.7-8.7s-3.8802-8.7-8.7-8.7h0Z"/>
   <path data-gene="FliF" id="FliF" class="cls-13" d="M255.1611,322.1764c-4.8198,0-10.3927,3.8802-10.3927,8.7,0,1.9424,1.4753,4.1931,2.5431,5.6378l7.8495-14.3378Z"/>
   <path id="path108" class="cls-22" d="M247.2945,325.7038l-7.7598-6.9915"/>
-  <rect id="rect9" class="cls-28" x=".6708" y="226.6764" width="355.2" height="17.4"/>
+  <rect id="rect9" class="cls-28" x=".6708" y="226.6764" width="353.1292" height="17.4"/>
   <rect id="rect10" class="cls-28" y="193.1764" width="353.8" height="18.8"/>
   <path data-gene="FlgH" id="FlgH" class="cls-10" d="M147.6698,194.1764c-2.874-1.0904-10.4698,0-10.4698,0-5.7,0-10.7,3.1-12.4,7.6l6.7,25c-3.2,8.6,4.5,17.3,15.4,17.3,0,0,7.4347,2.3282,7.1323-9.9724-.2111-8.5865-.3916-32.505-.3958-34.6385-.0103-5.1899-3.0928-4.1986-5.9668-5.2891h0Z"/>
   <g id="text24" class="cls-7">
@@ -192,11 +192,11 @@
   <g>
     <rect data-gene="FlbT" id="FlbT" class="cls-12" x="5.4584" y="467.0485" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
     <g id="text80" class="cls-7">
-      <text class="cls-2" transform="translate(14.4363 480.2401)"><tspan x="0" y="0">Flb</tspan><tspan class="cls-27" x="16.6699" y="0">T</tspan></text>
+      <text class="cls-2" transform="translate(14.4363 480.2401)"><tspan x="0" y="0">Flb</tspan><tspan class="cls-26" x="16.6699" y="0">T</tspan></text>
     </g>
   </g>
   <g id="text86" class="cls-7">
-    <text class="cls-2" transform="translate(503.2719 276.4764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-27" x="16.6699" y="0">P</tspan></text>
+    <text class="cls-2" transform="translate(503.2719 276.4764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-26" x="16.6699" y="0">P</tspan></text>
   </g>
   <path data-gene="FliF" id="FliF-2" data-name="FliF" class="cls-13" d="M99.3074,322.1764c4.8198,0,10.3927,3.8802,10.3927,8.7,0,1.9424-1.4753,4.1931-2.5431,5.6378l-7.8495-14.3378Z"/>
   <path id="path102" class="cls-22" d="M107.1739,325.7038l7.7598-6.9915"/>
@@ -238,10 +238,10 @@
   <rect data-gene="FlgP" id="FlgP" class="cls-10" x="438" y="201.2764" width="28.6" height="15.8" rx="5.8" ry="5.8"/>
   <rect data-gene="FlgO" id="FlgO" class="cls-10" x="466.9061" y="199.5264" width="27.2236" height="15.1" rx="5.8" ry="5.8"/>
   <g id="text58" class="cls-7">
-    <text class="cls-2" transform="translate(411.9086 219.7764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-27" x="16.6699" y="0">T</tspan></text>
+    <text class="cls-2" transform="translate(411.9086 219.7764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-26" x="16.6699" y="0">T</tspan></text>
   </g>
   <g id="text88">
-    <text class="cls-6" transform="translate(440.0718 212.8764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-27" x="16.6699" y="0">P</tspan></text>
+    <text class="cls-6" transform="translate(440.0718 212.8764)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-26" x="16.6699" y="0">P</tspan></text>
   </g>
   <g id="text101">
     <text class="cls-6" transform="translate(467.5162 210.9764)"><tspan x="0" y="0">FlgO</tspan></text>
@@ -255,7 +255,7 @@
   <rect id="rect103" class="cls-28" x="385.0855" y="400.3949" width="150.2024" height="17.4"/>
   <rect id="rect104" class="cls-28" x="385.0855" y="366.8949" width="149.6104" height="18.8"/>
   <g id="text122" class="cls-7">
-    <text class="cls-2" transform="translate(444.7711 390.2229)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-27" x="16.6699" y="0">P</tspan></text>
+    <text class="cls-2" transform="translate(444.7711 390.2229)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-26" x="16.6699" y="0">P</tspan></text>
   </g>
   <g>
     <rect data-gene="MotE" id="MotE" class="cls-10" x="384.691" y="431.2949" width="29.0363" height="16.8" rx="6.4" ry="6.4"/>
@@ -309,7 +309,7 @@
     <text class="cls-2" transform="translate(169.5337 308.7955) rotate(-19.0668)"><tspan x="0" y="0">FliR</tspan></text>
   </g>
   <g id="text12" class="cls-7">
-    <text class="cls-2" transform="translate(169.9488 296.3307) rotate(-19.0668)"><tspan x="0" y="0">Fli</tspan><tspan class="cls-27" x="12.6621" y="0">P</tspan></text>
+    <text class="cls-2" transform="translate(169.9488 296.3307) rotate(-19.0668)"><tspan x="0" y="0">Fli</tspan><tspan class="cls-26" x="12.6621" y="0">P</tspan></text>
   </g>
   <g id="text5" class="cls-7">
     <text class="cls-2" transform="translate(169.2176 285.1656) rotate(-19.0668)"><tspan x="0" y="0">FliQ</tspan></text>
@@ -346,7 +346,7 @@
   <g>
     <rect data-gene="FliT" id="FliT" class="cls-10" x="5.4584" y="440.8064" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
     <g id="text60-3" data-name="text60" class="cls-7">
-      <text class="cls-6" transform="translate(16.3317 453.9979)"><tspan x="0" y="0">Fli</tspan><tspan class="cls-27" x="12.6621" y="0">T</tspan></text>
+      <text class="cls-6" transform="translate(16.3317 453.9979)"><tspan x="0" y="0">Fli</tspan><tspan class="cls-26" x="12.6621" y="0">T</tspan></text>
     </g>
   </g>
   <g>
@@ -355,13 +355,13 @@
       <text class="cls-2" transform="translate(14.4363 427.756)"><tspan x="0" y="0">FlaF</tspan></text>
     </g>
   </g>
-  <rect data-gene="FlhC" id="FlhC" class="cls-12" x="84.0678" y="435.6802" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+  <rect data-gene="FlhC" id="FlhC" class="cls-12" x="83.8703" y="427.2166" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <g id="text80-3" data-name="text80" class="cls-7">
-    <text class="cls-2" transform="translate(92.3777 448.8719)"><tspan x="0" y="0">FlhC</tspan></text>
+    <text class="cls-2" transform="translate(92.1802 440.4082)"><tspan x="0" y="0">FlhC</tspan></text>
   </g>
-  <rect data-gene="FlhD" id="FlhD" class="cls-12" x="76.9014" y="454.655" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+  <rect data-gene="FlhD" id="FlhD" class="cls-12" x="76.7039" y="446.1914" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <g id="text80-4" data-name="text80" class="cls-7">
-    <text class="cls-2" transform="translate(85.2114 467.8467)"><tspan x="0" y="0">FlhD</tspan></text>
+    <text class="cls-2" transform="translate(85.0139 459.383)"><tspan x="0" y="0">FlhD</tspan></text>
   </g>
   <rect data-gene="FlrC" id="FlrC" class="cls-12" x="195.3423" y="461.1767" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <g id="text80-5" data-name="text80" class="cls-7">
@@ -395,7 +395,7 @@
   <g id="text60-9" data-name="text60" class="cls-7">
     <text class="cls-6" transform="translate(156.5026 451.6251)"><tspan x="0" y="0">FlgM</tspan></text>
   </g>
-  <rect data-gene="FlgD" id="FlgD" class="cls-26" x="105.9382" y="90.1786" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+  <rect data-gene="FlgD" id="FlgD" class="cls-10" x="105.9382" y="90.1786" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <g id="text60-10" data-name="text60" class="cls-7">
     <text class="cls-6" transform="translate(114.1397 103.3699)"><tspan x="0" y="0">FlgD</tspan></text>
   </g>
@@ -407,22 +407,26 @@
     <text class="cls-6" transform="translate(116.0428 146.1494)"><tspan x="0" y="0">FliK</tspan></text>
   </g>
   <g id="Putative">
-    <rect data-gene="Putative" id="rect7-2" data-name="rect7" class="cls-10" x="230.1869" y="148.6638" width="47.9026" height="17.9818" rx="6.6" ry="6.6"/>
+    <rect data-gene="Putative" id="rect7-2" data-name="rect7" class="cls-10" x="229.8259" y="148.6638" width="47.9026" height="17.9818" rx="6.6" ry="6.6"/>
     <g id="text75" class="cls-7">
-      <text class="cls-6" transform="translate(232.4585 161.8553)"><tspan x="0" y="0">Putative</tspan></text>
+      <text class="cls-6" transform="translate(232.0975 161.8553)"><tspan x="0" y="0">Putative</tspan></text>
     </g>
   </g>
-  <rect data-gene="DUF1217" id="DUF1217" class="cls-12" x="224.7379" y="123.0292" width="58.8005" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text87" class="cls-7">
-    <text class="cls-2" transform="translate(228.4597 136.2209)"><tspan x="0" y="0">DUF1217</tspan></text>
+  <g>
+    <rect data-gene="DUF1217" id="DUF1217" class="cls-12" x="224.3769" y="124.8484" width="58.8005" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text87" class="cls-7">
+      <text class="cls-2" transform="translate(228.0987 138.0401)"><tspan x="0" y="0">DUF1217</tspan></text>
+    </g>
   </g>
-  <rect data-gene="SwrD" id="SwrD" class="cls-10" x="241.1029" y="97.3946" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text60-13" data-name="text60" class="cls-7">
-    <text class="cls-6" transform="translate(247.3063 110.5859)"><tspan x="0" y="0">SwrD</tspan></text>
+  <g>
+    <rect data-gene="SwrD" id="SwrD" class="cls-10" x="232.9076" y="101.0331" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text60-13" data-name="text60" class="cls-7">
+      <text class="cls-6" transform="translate(239.1109 114.2244)"><tspan x="0" y="0">SwrD</tspan></text>
+    </g>
   </g>
-  <rect data-gene="FliD" id="FliD" class="cls-10" x="170.2564" y="6.0076" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text60-14" data-name="text60" class="cls-7">
-    <text class="cls-6" transform="translate(180.4617 19.199)"><tspan x="0" y="0">FliD</tspan></text>
+  <rect data-gene="FliD" id="FliD" class="cls-13" x="170.2564" y="6.0076" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+  <g id="text60-14" data-name="text60">
+    <text class="cls-2" transform="translate(180.462 19.199)"><tspan x="0" y="0">FliD</tspan></text>
   </g>
   <rect data-gene="FlgJ" id="FlgJ" class="cls-10" x="104.4378" y="169.9086" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
   <g id="text60-15" data-name="text60" class="cls-7">
@@ -488,31 +492,39 @@
   <g id="text80-8" data-name="text80" class="cls-7">
     <text class="cls-2" transform="translate(491.9138 261.6629)"><tspan x="0" y="0">FlgQ</tspan></text>
   </g>
-  <rect data-gene="DUF327" id="DUF327" class="cls-12" x="296.4622" y="148.6638" width="46" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text80-9" data-name="text80" class="cls-7">
-    <text class="cls-2" transform="translate(297.2288 161.8554)"><tspan x="0" y="0">DUF327</tspan></text>
+  <g>
+    <rect data-gene="DUF327" id="DUF327" class="cls-12" x="293.2229" y="148.6638" width="46" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text80-9" data-name="text80" class="cls-7">
+      <text class="cls-2" transform="translate(293.9896 161.8554)"><tspan x="0" y="0">DUF327</tspan></text>
+    </g>
   </g>
   <path data-gene="SwrB" id="SwrB" class="cls-10" d="M43.0746,297.0808c-2.2769,0-4.1227,1.8458-4.1227,4.1227v21.1585H12.0584c-3.6451,0-6.6,2.9549-6.6,6.6v4.7818c0,3.6451,2.955,6.6,6.6,6.6h28.539c2.1469,0,4.0486-1.0297,5.2539-2.6171.822-.7537,1.3461-1.8265,1.3461-3.0297v-33.4935c0-2.2769-1.8458-4.1227-4.1228-4.1227Z"/>
   <g id="text79" class="cls-7">
     <text class="cls-6" transform="translate(11.993 334.8147)"><tspan x="0" y="0">SwrB</tspan></text>
   </g>
-  <rect data-gene="YviE" id="YviE" class="cls-12" x="298.9633" y="123.4417" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text87-2" data-name="text87" class="cls-7">
-    <text class="cls-2" transform="translate(306.4863 136.6334)"><tspan class="cls-19" x="0" y="0">Y</tspan><tspan x="7.3418" y="0">viE</tspan></text>
+  <g>
+    <rect data-gene="YviE" id="YviE" class="cls-12" x="297.1282" y="123.2894" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text87-2" data-name="text87" class="cls-7">
+      <text class="cls-2" transform="translate(304.6511 136.4811)"><tspan class="cls-19" x="0" y="0">Y</tspan><tspan x="7.3418" y="0">viE</tspan></text>
+    </g>
   </g>
-  <rect data-gene="YvyF" id="YvyF" class="cls-12" x="298.9633" y="98.51" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text87-3" data-name="text87" class="cls-7">
-    <text class="cls-2" transform="translate(305.1562 111.7017)"><tspan class="cls-19" x="0" y="0">Y</tspan><tspan x="7.3418" y="0">vyF</tspan></text>
+  <g>
+    <rect data-gene="YvyF" id="YvyF" class="cls-12" x="297.1282" y="99.4741" width="37.5555" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text87-3" data-name="text87" class="cls-7">
+      <text class="cls-2" transform="translate(303.0825 112.666) scale(.9615 1)"><tspan class="cls-27" x="0" y="0">Y</tspan><tspan x="7.3419" y="0">vyF</tspan></text>
+    </g>
   </g>
-  <rect data-gene="FliB" id="FliB" class="cls-10" x="298.9633" y="73.7843" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
-  <g id="text87-4" data-name="text87">
-    <text class="cls-6" transform="translate(308.1591 86.976)"><tspan x="0" y="0">FliB</tspan></text>
+  <g>
+    <rect data-gene="FliB" id="FliB" class="cls-10" x="296.6943" y="53.4024" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text87-4" data-name="text87">
+      <text class="cls-6" transform="translate(305.8901 66.5941)"><tspan x="0" y="0">FliB</tspan></text>
+    </g>
   </g>
   <rect id="rect135-3" data-name="rect135" class="cls-28" x="384.2525" y="123.0591" width="150.1739" height="24.2297"/>
   <rect id="rect103-2" data-name="rect103" class="cls-28" x="384.8159" y="52.359" width="150.2024" height="17.4"/>
   <rect id="rect104-2" data-name="rect104" class="cls-28" x="384.8159" y="18.859" width="149.6104" height="18.8"/>
   <g id="text122-2" data-name="text122">
-    <text class="cls-6" transform="translate(454.056 388.2146)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-27" x="16.6699" y="0">P</tspan></text>
+    <text class="cls-6" transform="translate(454.056 388.2146)"><tspan x="0" y="0">Flg</tspan><tspan class="cls-26" x="16.6699" y="0">P</tspan></text>
   </g>
   <rect data-gene="FlcD" id="FlcD" class="cls-14" x="437.8998" y="94.6645" width="27.5" height="14.631" rx="6.4" ry="6.4"/>
   <g id="text128-2" data-name="text128" class="cls-7">
@@ -563,9 +575,9 @@
   </g>
   <path id="path32-2" data-name="path32" class="cls-23" d="M267.6928,14.9984h57.3739"/>
   <g id="FlaY">
-    <rect data-gene="FlaY" id="rect81" class="cls-14" x="291.7207" y="6.2432" width="47.4025" height="17.5103" rx="6.6" ry="6.6"/>
+    <rect data-gene="FlaY" id="rect81" class="cls-14" x="292.5217" y="6.2432" width="47.4025" height="17.5103" rx="6.6" ry="6.6"/>
     <g id="text82" class="cls-7">
-      <text class="cls-2" transform="translate(303.1285 19.1989)"><tspan x="0" y="0">Fla</tspan><tspan class="cls-27" x="16.6699" y="0">Y</tspan></text>
+      <text class="cls-2" transform="translate(303.9294 19.1989)"><tspan x="0" y="0">Fla</tspan><tspan class="cls-26" x="16.6699" y="0">Y</tspan></text>
     </g>
   </g>
   <rect data-gene="Transglycosylase" id="rect7-3" data-name="rect7" class="cls-10" x="4.2968" y="169.9086" width="96.8598" height="17.9818" rx="6.6" ry="6.6"/>
@@ -619,8 +631,8 @@
     <polygon class="cls-1" points="173.8344 498.6862 169.2383 500.6178 173.2086 503.6329 173.8344 498.6862"/>
   </g>
   <g>
-    <path class="cls-18" d="M120.9769,458.1891c-.0505,3.2547.2731,11.2011,5.4388,19.1655,2.4439,3.768,5.2724,6.4619,7.6691,8.3154"/>
-    <polygon class="cls-1" points="132.074 487.2144 137.0344 487.7143 134.9879 483.1683 132.074 487.2144"/>
+    <path class="cls-18" d="M120.9769,451.9948c-.0505,3.9376.2731,13.5511,5.4388,23.1863,2.5098,4.6813,5.425,7.9922,7.8618,10.2389"/>
+    <polygon class="cls-1" points="132.137 486.7812 137.0344 487.7143 135.3945 483.0063 132.137 486.7812"/>
   </g>
   <g>
     <path class="cls-17" d="M235.1927,447.0524c-8.5264.0947-25.1293-1.0087-41.4388-11.3957-4.323-2.7531-7.9436-5.7244-10.9417-8.5953"/>
@@ -632,5 +644,37 @@
   </g>
   <g id="text29" class="cls-7">
     <text class="cls-2" transform="translate(169.8458 272.6954) rotate(-19.0668)"><tspan x="0" y="0">FliE</tspan></text>
+  </g>
+  <g>
+    <rect data-gene="FljA" id="FljA" class="cls-12" x="296.6943" y="29.5871" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text87-5" data-name="text87" class="cls-7">
+      <text class="cls-2" transform="translate(305.8901 42.7787)"><tspan x="0" y="0">Flj</tspan><tspan class="cls-19" x="12.6621" y="0">A</tspan></text>
+    </g>
+  </g>
+  <rect data-gene="YdiV" id="YdiV" class="cls-12" x="77.3456" y="468.9591" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
+  <g id="text87-6" data-name="text87" class="cls-7">
+    <text class="cls-2" transform="translate(84.2005 482.1508)"><tspan x="0" y="0">YdiV</tspan></text>
+  </g>
+  <g>
+    <rect data-gene="MotK" id="MotK" class="cls-12" x=".6708" y="270.0461" width="41.7391" height="18.0145" rx="6.6" ry="6.6"/>
+    <g id="text80-11" data-name="text80" class="cls-7">
+      <text class="cls-2" transform="translate(7.6448 283.2705)"><tspan x="0" y="0">MotK</tspan></text>
+    </g>
+  </g>
+  <g>
+    <rect data-gene="MotC" id="MotC" class="cls-12" x="44.2587" y="270.0625" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text80-12" data-name="text80" class="cls-7">
+      <text class="cls-2" transform="translate(50.9016 283.2542)"><tspan x="0" y="0">MotC</tspan></text>
+    </g>
+  </g>
+  <rect data-gene="FliZ" id="FliZ" class="cls-12" x="78.0448" y="489.7268" width="39.0573" height="17.9818" rx="6.6" ry="6.6"/>
+  <g id="text87-7" data-name="text87" class="cls-7">
+    <text class="cls-2" transform="translate(87.5774 502.9185)"><tspan x="0" y="0">FliZ</tspan></text>
+  </g>
+  <g>
+    <rect data-gene="FlgX" id="FlgX" class="cls-12" x="87.8465" y="270.0625" width="41.7391" height="17.9818" rx="6.6" ry="6.6"/>
+    <g id="text80-13" data-name="text80" class="cls-7">
+      <text class="cls-2" transform="translate(96.4875 283.2542)"><tspan x="0" y="0">FlgX</tspan></text>
+    </g>
   </g>
 </svg>

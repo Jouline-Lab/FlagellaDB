@@ -102,7 +102,7 @@ export const CUSTOM_GENE_ROW_ORDER = [
   "Putative",
   "FapA",
   "SwrD",
-  "DUF6470",
+  "YviE",
   "SwrB",
   "FliB",
   "SwrA",

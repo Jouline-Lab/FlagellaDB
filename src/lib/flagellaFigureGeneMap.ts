@@ -2,18 +2,10 @@
  * Gene coverage notes for flagellum_figure_database.svg (species interactive figure).
  * These DB genes have no labeled shape in the figure yet — tracked for a future figure update.
  */
-export const FLAGELLA_FIGURE_MISSING_DB_GENES = [
-  "DUF6470",
-  "FlgX",
-  "FliZ",
-  "FljA",
-  "MotC",
-  "MotK",
-  "YdiV"
-] as const;
+export const FLAGELLA_FIGURE_MISSING_DB_GENES = [] as const;
 
 /** Labels present in the figure but absent from the phyletic distribution TSV. */
-export const FLAGELLA_FIGURE_EXTRA_LABELS = ["YviE"] as const;
+export const FLAGELLA_FIGURE_EXTRA_LABELS = [] as const;
 
 /**
  * Single SVG shapes that represent multiple database genes.

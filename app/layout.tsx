@@ -3,7 +3,7 @@ import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
-  title: "Flagella Evolution Database",
+  title: "Flagella DB",
   description: "A static database website for exploring flagellar evolution."
 };
 

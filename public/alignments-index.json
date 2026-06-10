@@ -5,7 +5,6 @@
     "DUF1217_homologs_db_FAMSA.fasta",
     "DUF327_homologs_db_FAMSA.fasta",
     "DUF3383_homologs_db_FAMSA.fasta",
-    "DUF6470_homologs_db_FAMSA.fasta",
     "FapA_homologs_db_FAMSA_reptrim.fasta",
     "FlaF_homologs_db_FAMSA.fasta",
     "FlaG_homologs_db_FAMSA_reptrim.fasta",
@@ -98,6 +97,7 @@
     "Transglutaminase_homologs_db_FAMSA_reptrim.fasta",
     "Transglycosylase_homologs_db_FAMSA_reptrim.fasta",
     "YdiV_homologs_db_FAMSA.fasta",
+    "YviE_homologs_db_FAMSA.fasta",
     "YvyF_homologs_db_FAMSA.fasta"
   ]
 }

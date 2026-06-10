@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const DEFAULT_INPUT = path.join(process.cwd(), "flagellum_figure_database.svg");
+const DEFAULT_INPUT = path.join(process.cwd(), "public", "flagellum_figure_database.svg");
 const DEFAULT_OUTPUT = path.join(process.cwd(), "public", "Flagella_figure.labeled.svg");
 
 const SHAPE_TAGS = ["rect", "ellipse", "circle", "path", "polygon", "polyline"];
@@ -194,6 +194,26 @@ function tagNestedFlgPanels(svgText) {
   );
 }
 
+function collectSvgGeneNames(svgText) {
+  const genes = new Set();
+  for (const match of svgText.matchAll(/\bdata-gene="([^"]+)"/g)) {
+    for (const part of match[1].split(/[,|/]/)) {
+      const gene = part.trim();
+      if (gene) genes.add(gene);
+    }
+  }
+  return genes;
+}
+
+async function collectDbGeneNames() {
+  const tsvPath = path.join(process.cwd(), "public", "flagellar_genes_phyletic_distribution.tsv");
+  if (!existsSync(tsvPath)) {
+    return [];
+  }
+  const header = (await readFile(tsvPath, "utf8")).split(/\r?\n/, 1)[0];
+  return [...header.matchAll(/([A-Za-z0-9]+)_count/g)].map((match) => match[1]).sort();
+}
+
 async function main() {
   const { input, output } = parseArgs(process.argv.slice(2));
   if (!existsSync(input)) {
@@ -212,15 +232,25 @@ async function main() {
   await writeFile(output, svgText, "utf8");
 
   const labeledCount = (svgText.match(/\bdata-gene="/g) ?? []).length;
+  const svgGenes = collectSvgGeneNames(svgText);
+  const dbGenes = await collectDbGeneNames();
+  const missingFromSvg = dbGenes.filter((gene) => !svgGenes.has(gene));
+  const extraInSvg = [...svgGenes].filter((gene) => !dbGenes.includes(gene)).sort();
+
   // eslint-disable-next-line no-console
   console.log(`Labeled SVG written: ${output}`);
   // eslint-disable-next-line no-console
   console.log(`Interactive gene shapes: ${labeledCount}`);
   // eslint-disable-next-line no-console
-  console.log(
-    "DB genes without figure shapes (see src/lib/flagellaFigureGeneMap.ts):",
-    "DUF6470, FlgX, FliZ, FljA, MotC, MotK, YdiV"
-  );
+  console.log(`DB genes in figure: ${dbGenes.length - missingFromSvg.length}/${dbGenes.length}`);
+  if (missingFromSvg.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`DB genes without figure shapes: ${missingFromSvg.join(", ")}`);
+  }
+  if (extraInSvg.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`Figure-only labels (not in DB): ${extraInSvg.join(", ")}`);
+  }
 }
 
 main().catch((error) => {

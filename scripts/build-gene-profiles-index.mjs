@@ -105,7 +105,7 @@ const GENE_CATEGORY = {
   transglycosylase: "Other flagella-associated genes",
   duf1217: "Other flagella-associated genes",
   duf327: "Other flagella-associated genes",
-  duf6470: "Other flagella-associated genes",
+  yvie: "Other flagella-associated genes",
   putative: "Other flagella-associated genes",
   yvyf: "Other flagella-associated genes"
 };
@@ -191,7 +191,7 @@ const GENE_FUNCTION_SUMMARIES = {
   fapa: "Regulator of flagellar biosynthesis and motility (DUF342).",
   putative: "Function unknown.",
   yvyf: "Function unknown.",
-  duf6470: "Function unknown (YviE).",
+  yvie: "Function unknown.",
   duf1217: "Function unknown.",
   duf327: "Function unknown.",
   pilz: "PilZ c-di-GMP–binding domain protein."

@@ -2,6 +2,21 @@
 
 This is a Next.js static website project for building the Flagella Evolution Database page by page.
 
+## Analytics
+
+Google Analytics is loaded when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set during
+the build. GitHub Pages production builds set it to `G-B1CPJ2P2PJ` in
+`.github/workflows/nextjs.yml`.
+
+For local testing, run:
+
+```bash
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-B1CPJ2P2PJ npm run build
+```
+
+Leave the variable unset for local builds or preview environments where tracking
+should be disabled.
+
 ## Project structure
 
 - `src/app`: routes and pages (homepage and future pages)

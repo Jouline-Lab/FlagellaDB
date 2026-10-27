@@ -1,5 +1,5 @@
 /** Data of the orthologous-group extraction page, written by
- * scripts/build-orthologous-groups-data.py into public/transparency/orthologous-groups/. */
+ * scripts/build-orthologous-groups-data.py into public/orthologous-groups-data/. */
 
 export interface CrossBlock {
   /** [bin_start, bin_end) on the binned x-axis. */

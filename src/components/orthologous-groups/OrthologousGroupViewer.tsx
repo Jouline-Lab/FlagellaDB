@@ -9,7 +9,9 @@ import { withBasePath } from "@/lib/assetPaths";
 import { GroupFigure, fmt, isGroupRow, rowLabel, type CrossHit } from "@/lib/orthologous-groups/draw";
 import type { GroupBundle, GroupIndexEntry } from "@/types/orthologous-groups";
 
-const DATA_DIR = "/transparency/orthologous-groups";
+// Not under /transparency/orthologous-groups/: in the static export that folder is the
+// page itself, and a data index.json there would be served in place of the page.
+const DATA_DIR = "/orthologous-groups-data";
 
 const MSA_LABELS: Record<string, string> = {
   gap: "gap", hydrophobic: "hydrophobic", polar: "polar/neutral",

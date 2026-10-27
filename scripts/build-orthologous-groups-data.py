@@ -28,7 +28,10 @@ Usage:
         --pipeline-zip <Zenodo>/pipeline_files_per_gene.zip \
         --homologs <Zenodo>/flagellar_genes_homologs.tsv \
         --boundaries <LBCA_Flagellum>/code_and_data/post_processing/extract_homologous_clades.py \
-        --out public/transparency/orthologous-groups [group ...]
+        --out public/orthologous-groups-data [group ...]
+
+The output must not go under public/transparency/orthologous-groups/: in the static
+export that folder is the page itself, and its index.json would be served in place of it.
 """
 
 import argparse

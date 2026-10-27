@@ -306,10 +306,6 @@ export default function OrthologousGroupViewer() {
                  style={{ width: figure?.gutterWidth ?? 95, flex: `0 0 ${figure?.gutterWidth ?? 95}px` }} />
             <div ref={canvasRef} className="flex min-w-0 flex-1 flex-col" />
           </div>
-          <div className={"mt-1 flex justify-between text-[10px] " + soft}
-               style={{ marginLeft: (figure?.gutterWidth ?? 95) + 2 }}>
-            <span>← higher-scoring leaves</span><span>lower-scoring leaves →</span>
-          </div>
 
           {data && (
             <div className={"mt-5 flex flex-wrap gap-6 border-t border-[var(--surface-border)] pt-4 text-[11px] " + soft}>

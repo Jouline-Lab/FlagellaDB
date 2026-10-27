@@ -16,6 +16,25 @@ const MSA_LABELS: Record<string, string> = {
   acidic: "acidic (D/E)", basic: "basic (K/R/H)", other: "other/ambiguous"
 };
 
+/** Decode the grayscale MSA image to one byte per cell (row = alignment column). */
+async function loadMsaCells(url: string, width: number, height: number): Promise<Uint8Array> {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  if (img.naturalWidth !== width || img.naturalHeight !== height) {
+    throw new Error("MSA image is " + img.naturalWidth + "x" + img.naturalHeight + ", expected " + width + "x" + height);
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+  ctx.drawImage(img, 0, 0);
+  const rgba = ctx.getImageData(0, 0, width, height).data;
+  const cells = new Uint8Array(width * height);
+  for (let i = 0; i < cells.length; i++) cells[i] = rgba[i * 4];
+  return cells;
+}
+
 /** The site theme is set on <html data-theme>, so follow that attribute. */
 function useDarkTheme() {
   const [dark, setDark] = useState(false);
@@ -52,7 +71,8 @@ export default function OrthologousGroupViewer() {
   const searchParams = useSearchParams();
   const dark = useDarkTheme();
   const [groups, setGroups] = useState<GroupIndexEntry[]>([]);
-  const [data, setData] = useState<GroupBundle | null>(null);
+  const [loaded, setLoaded] = useState<{ bundle: GroupBundle; cells: Uint8Array } | null>(null);
+  const data = loaded?.bundle ?? null;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [swapped, setSwapped] = useState(false);
@@ -92,13 +112,16 @@ export default function OrthologousGroupViewer() {
     setError(null);
     fetch(withBasePath(DATA_DIR + "/" + current.group + ".json"))
       .then(r => { if (!r.ok) throw new Error(current.group + " " + r.status); return r.json(); })
-      .then((d: GroupBundle) => { if (!cancelled) setData(d); })
+      .then(async (d: GroupBundle) => {
+        const cells = await loadMsaCells(withBasePath(DATA_DIR + "/" + d.msa.png), d.n_bins, d.aln_len);
+        if (!cancelled) setLoaded({ bundle: d, cells });
+      })
       .catch(e => { if (!cancelled) setError(String(e)); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [current]);
 
-  const figure = useMemo(() => (data ? new GroupFigure(data) : null), [data]);
+  const figure = useMemo(() => (loaded ? new GroupFigure(loaded.bundle, loaded.cells) : null), [loaded]);
 
   const draw = useCallback(() => {
     if (!figure || !panelRef.current || !labelRef.current || !canvasRef.current) return;

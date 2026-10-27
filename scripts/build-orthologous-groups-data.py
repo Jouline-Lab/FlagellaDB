@@ -38,8 +38,11 @@ import gzip
 import io
 import json
 import os
+import struct
 import sys
+import warnings
 import zipfile
+import zlib
 
 import numpy as np
 
@@ -419,7 +422,6 @@ for _ch in "DE":
     CAT_LUT[ord(_ch)] = 3                          # acidic
 for _ch in "KRH":
     CAT_LUT[ord(_ch)] = 4                          # basic
-HEXDIGITS = np.frombuffer(b"0123456789abcdef", dtype=np.uint8)
 
 # Taylor (1997) amino-acid colours by physicochemical group, desaturated so a dense
 # bin x column heatmap does not overpower the other tracks (as on gpcrevolution.org).
@@ -474,14 +476,28 @@ def build_msa_raster(seqs, leaf_order, bin_size, n_bins):
     frac = counts.max(axis=0) / float(bin_size)
     del counts
 
-    # One string per alignment column, N-terminus first; the page draws it bottom-up.
-    cat_bytes = np.ascontiguousarray((majority + 48).T)        # (aln_len, n_bins)
-    frac_idx = np.rint(frac * 15).astype(np.int32).clip(0, 15)
-    frac_bytes = np.ascontiguousarray(HEXDIGITS[frac_idx].T)
+    # One byte per cell, majority class * 16 + its share in sixteenths, as a grayscale
+    # image: one row per alignment column (N-terminus first; the page draws it
+    # bottom-up), one pixel per bin. The page recolours it, so the theme still applies.
+    frac_idx = np.rint(frac * 15).astype(np.uint8).clip(0, 15)
+    cells = np.ascontiguousarray((majority * 16 + frac_idx).T)  # (aln_len, n_bins)
+    return aln_len, cells, missing
 
-    cat_rows = [row.tobytes().decode("ascii") for row in cat_bytes]
-    frac_rows = [row.tobytes().decode("ascii") for row in frac_bytes]
-    return aln_len, cat_rows, frac_rows, missing
+
+def write_gray_png(path, pixels):
+    """8-bit grayscale PNG of a 2-D uint8 array, written with zlib alone."""
+    height, width = pixels.shape
+    raw = b"".join(b"\x00" + row.tobytes() for row in pixels)   # filter type 0 per row
+
+    def chunk(kind, data):
+        return (struct.pack(">I", len(data)) + kind + data
+                + struct.pack(">I", zlib.crc32(kind + data) & 0xFFFFFFFF))
+
+    with open(path, "wb") as f:
+        f.write(b"\x89PNG\r\n\x1a\n")
+        f.write(chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)))
+        f.write(chunk(b"IDAT", zlib.compress(raw, 9)))
+        f.write(chunk(b"IEND", b""))
 
 
 # -----------------------------------------------------------------------------
@@ -503,14 +519,18 @@ def clean(values, digits):
     return [None if np.isnan(v) else round(float(v), digits) for v in values]
 
 
-def per_leaf(value_by_id, order, digits):
-    """The unaggregated series, one value per tree leaf in tree order, drawn
-    faintly underneath the smoothed line."""
-    out = []
-    for name in order:
-        v = value_by_id.get(name)
-        out.append(None if v is None else round(float(v), digits))
-    return out
+def binned_range(value_by_id, order, bin_size, n_bins, digits):
+    """Minimum and maximum of the unsmoothed series in each bin. The page draws the
+    band between them under the smoothed line, which shows the same spread as one
+    value per leaf at the width the track is drawn."""
+    arr = np.array([value_by_id.get(name, np.nan) for name in order], dtype=float)
+    pad = n_bins * bin_size - len(arr)
+    if pad:
+        arr = np.pad(arr, (0, pad), constant_values=np.nan)
+    arr = arr.reshape(n_bins, bin_size)
+    with np.errstate(invalid="ignore"), warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)       # all-NaN bins stay NaN
+        return clean(np.nanmin(arr, axis=1), digits), clean(np.nanmax(arr, axis=1), digits)
 
 
 def score_series(html, leaf_order, bin_size, n_bins):
@@ -520,11 +540,13 @@ def score_series(html, leaf_order, bin_size, n_bins):
             by_name[tr["name"]] = dict(zip(decode_plotly_array(tr["x"]), decode_plotly_array(tr["y"])))
     if not all(k in by_name for k in SCORE_TRACES):
         return None
+    score_min, score_max = binned_range(by_name["Score"], leaf_order, bin_size, n_bins, 3)
+    index_min, index_max = binned_range(by_name["Normalized_Index"], leaf_order, bin_size, n_bins, 3)
     return {
         "score_smoothed_mean": clean(binned_mean(by_name["Score_smoothed"], leaf_order, bin_size, n_bins), 4),
         "index_smoothed_mean": clean(binned_mean(by_name["Normalized_Index_smoothed"], leaf_order, bin_size, n_bins), 4),
-        "score_raw_leaf": per_leaf(by_name["Score"], leaf_order, 3),
-        "index_raw_leaf": per_leaf(by_name["Normalized_Index"], leaf_order, 3),
+        "score_raw_min": score_min, "score_raw_max": score_max,
+        "index_raw_min": index_min, "index_raw_max": index_max,
     }
 
 
@@ -666,11 +688,14 @@ def build_group(archive, gene, data, groups, members, group_of_search, out_dir, 
     print("  [4/6] rasterizing the alignment ...")
     with archive.open_text(src["fasta"][1]) as f:
         seqs = read_fasta(f)
-    aln_len, cat_rows, frac_rows, missing = build_msa_raster(seqs, leaf_order, bin_size, n_bins)
+    aln_len, cells, missing = build_msa_raster(seqs, leaf_order, bin_size, n_bins)
     del seqs
     if missing:
         print("        WARNING: %d leaves had no MSA row (filled with gaps)" % missing)
-    print("        raster: %d columns x %d bins" % (aln_len, n_bins))
+    msa_png = gene + ".msa.png"
+    write_gray_png(os.path.join(out_dir, msa_png), cells)
+    print("        raster: %d columns x %d bins -> %s (%.2f MB)"
+          % (aln_len, n_bins, msa_png, os.path.getsize(os.path.join(out_dir, msa_png)) / 1e6))
 
     print("  [5/6] extracting score and neighbor series ...")
     score = score_series(archive.read_text(src["score"]), leaf_order, bin_size, n_bins) if src["score"] else None
@@ -731,8 +756,8 @@ def build_group(archive, gene, data, groups, members, group_of_search, out_dir, 
         "msa": {
             "categories": ["gap", "hydrophobic", "polar", "acidic", "basic", "other"],
             "colors": PALETTE,
-            "cat_rows": cat_rows,
-            "frac_rows": frac_rows,
+            # Grayscale PNG next to this file: pixel = class * 16 + share in sixteenths.
+            "png": msa_png,
         },
         "score": score,
         "neighbors": neighbors,

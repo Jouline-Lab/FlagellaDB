@@ -102,8 +102,12 @@ export class GroupFigure {
 
   private get T() { return this.opts.dark ? DARK : LIGHT; }
 
-  constructor(data: GroupBundle) {
+  /** The decoded MSA image: aln_len rows x n_bins, class * 16 + share in sixteenths. */
+  private readonly msaCells: Uint8Array;
+
+  constructor(data: GroupBundle, msaCells: Uint8Array) {
     this.data = data;
+    this.msaCells = msaCells;
     // The other run of the same group comes first, in slate; the other groups follow in the
     // order they first appear along the tree, coloured by that order.
     this.cross = data.cross || [];
@@ -334,7 +338,7 @@ export class GroupFigure {
   private buildMsaBitmap() {
     if (this.msaBitmap && this.msaBitmapDark === !!this.opts.dark) return this.msaBitmap;
     const bg = this.T.bg;
-    const { cat_rows: catRows, frac_rows: fracRows } = this.data.msa;
+    const cells = this.msaCells;
     const alnLen = this.data.aln_len;
     const nBins = this.nBins;
     const colors = this.data.msa.colors.map(hexToRgb);
@@ -345,12 +349,11 @@ export class GroupFigure {
     const img = octx.createImageData(nBins, alnLen);
     // N-terminus at the bottom, reading upward to the C-terminus.
     for (let row = 0; row < alnLen; row++) {
-      const catRow = catRows[row];
-      const fracRow = fracRows[row];
       const rowOff = (alnLen - 1 - row) * nBins * 4;
       for (let col = 0; col < nBins; col++) {
-        const cat = catRow.charCodeAt(col) - 48;
-        const frac = parseInt(fracRow[col], 16) / 15;
+        const v = cells[row * nBins + col];
+        const cat = Math.min(5, v >> 4);
+        const frac = (v & 15) / 15;
         const base = colors[cat];
         const idx = rowOff + col * 4;
         img.data[idx] = Math.round(bg + (base[0] - bg) * frac);
@@ -397,20 +400,50 @@ export class GroupFigure {
     ctx.restore();
   }
 
+  /** The per-bin range of the unsmoothed series, as a filled band (broken where a bin has no value). */
+  private drawBand(ctx: CanvasRenderingContext2D, w: number, h: number,
+                   lower: (number | null)[], upper: (number | null)[], color: string,
+                   yMax: number, yMin: number) {
+    const n = lower.length;
+    const y = (v: number) => h - ((v - yMin) / (yMax - yMin)) * h;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.22;
+    let i = 0;
+    while (i < n) {
+      while (i < n && (lower[i] === null || upper[i] === null)) i++;
+      const start = i;
+      while (i < n && lower[i] !== null && upper[i] !== null) i++;
+      if (i === start) continue;
+      ctx.beginPath();
+      for (let k = start; k < i; k++) {
+        const x0 = (k / n) * w, x1 = ((k + 1) / n) * w;
+        if (k === start) ctx.moveTo(x0, y(upper[k]!)); else ctx.lineTo(x0, y(upper[k]!));
+        ctx.lineTo(x1, y(upper[k]!));
+      }
+      for (let k = i - 1; k >= start; k--) {
+        ctx.lineTo(((k + 1) / n) * w, y(lower[k]!));
+        ctx.lineTo((k / n) * w, y(lower[k]!));
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
   private drawMetricRow(ctx: CanvasRenderingContext2D, w: number, h: number,
-                        raw: (number | null)[], smoothed: (number | null)[], color: string,
+                        rawMin: (number | null)[], rawMax: (number | null)[],
+                        smoothed: (number | null)[], color: string,
                         rawLabel: string, smoothLabel: string) {
     let lo = Infinity, hi = -Infinity;
-    [raw, smoothed].forEach(vals => vals && vals.forEach(v => {
+    [rawMin, rawMax, smoothed].forEach(vals => vals && vals.forEach(v => {
       if (v === null || v === undefined || Number.isNaN(v)) return;
       if (v < lo) lo = v;
       if (v > hi) hi = v;
     }));
     if (!(lo < hi)) { lo = 0; hi = 1; }
-    this.drawLineSeries(ctx, w, h, [
-      { values: raw, color, width: 0.5, alpha: 0.30 },
-      { values: smoothed, color, width: 1.8 },
-    ], hi, lo);
+    this.drawBand(ctx, w, h, rawMin, rawMax, color, hi, lo);
+    this.drawLineSeries(ctx, w, h, [{ values: smoothed, color, width: 1.8 }], hi, lo);
     this.paintHighlight(ctx, w, h);
     this.drawBaseline(ctx, w, h);
     this.drawRightMiddleLegend(ctx, w, h, [
@@ -423,12 +456,12 @@ export class GroupFigure {
     const ctx = this.setupCanvas(canvas, w, h);
     const s = this.data.score!;
     const rowH = h / 2;
-    this.drawMetricRow(ctx, w, rowH, s.score_raw_leaf, s.score_smoothed_mean, SCORE_COLOR,
-                       "Raw Score", "Smoothed Score");
+    this.drawMetricRow(ctx, w, rowH, s.score_raw_min, s.score_raw_max, s.score_smoothed_mean, SCORE_COLOR,
+                       "Raw Score range", "Smoothed Score");
     ctx.save();
     ctx.translate(0, rowH);
-    this.drawMetricRow(ctx, w, rowH, s.index_raw_leaf, s.index_smoothed_mean, INDEX_COLOR,
-                       "Raw Index", "Smoothed Index");
+    this.drawMetricRow(ctx, w, rowH, s.index_raw_min, s.index_raw_max, s.index_smoothed_mean, INDEX_COLOR,
+                       "Raw Index range", "Smoothed Index");
     ctx.restore();
   };
 

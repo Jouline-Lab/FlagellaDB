@@ -63,12 +63,17 @@ export interface GroupBundle {
   n_bins: number;
   aln_len: number;
   highlight: { ranges: [number, number][]; depths: number[] };
-  msa: { categories: string[]; colors: string[]; cat_rows: string[]; frac_rows: string[] };
+  /** `png`: grayscale image beside the bundle, one row per alignment column (N-terminus
+   * first) and one pixel per bin, value = majority class * 16 + its share in sixteenths. */
+  msa: { categories: string[]; colors: string[]; png: string };
+  /** Per bin: the smoothed series, and the range (min, max) of the unsmoothed one. */
   score: {
     score_smoothed_mean: (number | null)[];
     index_smoothed_mean: (number | null)[];
-    score_raw_leaf: (number | null)[];
-    index_raw_leaf: (number | null)[];
+    score_raw_min: (number | null)[];
+    score_raw_max: (number | null)[];
+    index_raw_min: (number | null)[];
+    index_raw_max: (number | null)[];
   } | null;
   neighbors: NeighborSeries | null;
   cross: CrossRow[];
